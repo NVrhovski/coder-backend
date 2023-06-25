@@ -12,14 +12,20 @@ export class ProductManager {
         if(fs.existsSync(this.path))
         {
             let data = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
-            return data[data.length - 1].id + 1
+            if(data.length == 0)
+            {
+                return 1
+            }else
+            {
+                return data[data.length - 1].id + 1
+            }
         }else 
         {
             return 1
         }
     }
 
-    addProduct(title = '', description = '', price = 0, thumbnail = '/assets/images/default-image.png', code = '', stock = 0)
+    addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = []})
     {
         if(fs.existsSync(this.path))
         {
@@ -29,9 +35,11 @@ export class ProductManager {
                 title,
                 description,
                 price,
-                thumbnail,
+                thumbnails,
                 code,
-                stock
+                stock,
+                category,
+                status
             };
             data.push(newData);
             fs.writeFileSync(this.path, JSON.stringify(data));
@@ -58,7 +66,7 @@ export class ProductManager {
             return JSON.parse(fs.readFileSync(this.path, 'utf-8'))
         }else
         {
-            return 'Error: El archivo no existe o fue borrado'
+            return {status: 'Error', message: 'El archivo no existe o fue borrado'}
         }
     };
 
@@ -80,7 +88,7 @@ export class ProductManager {
         }
     }
 
-    updateProduct(productId, title = '', description = '', price = 0, thumbnail = '/assets/images/default-image.png', code = '', stock = 0)
+    updateProduct({productId, title = '', description = '', price = 0, thumbnail = '/assets/images/default-image.png', code = '', stock = 0})
     {
         if(fs.existsSync(this.path))
         {
@@ -98,14 +106,14 @@ export class ProductManager {
                     stock
                 }
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return 'Producto actualizado con exito!'
+                return {status: 'Success', message: 'Producto actualizado con exito!'}
             }else 
             {
-                return 'Error: el producto a actualizar no existe'
+                return {status: 'Error', message: 'El producto a actualizar no existe'}
             }
         }else
         {
-            return 'Error: El archivo no existe o fue borrado';
+            return {status: 'Error', message: 'El archivo no existe o fue borrado'}
         }
     }
 
@@ -119,14 +127,14 @@ export class ProductManager {
             {
                 data.splice(productIndex, 1);
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return 'Producto eliminado con exito!'
+                return {status: 'Success', message: 'Producto eliminado con exito!'}
             }else 
             {
-                return 'Error: el producto a eliminar no existe'
+                return {status: 'Error', message: 'El producto a eliminar no existe'}
             }
         }else
         {
-            return 'Error: El archivo no existe o fue borrado';
+            return {status: 'Error', message: 'El archivo no existe o fue borrado'}
         }
     }
 }
