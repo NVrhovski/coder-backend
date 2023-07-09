@@ -1,0 +1,17 @@
+<div class="cards-container">
+    {{#each data}}
+    <div class="card" style="width: 100%;">
+        <div class="card-header">
+            <h2>{{this.title}}</h2>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{this.description}}</li>
+            <li class="list-group-item">Precio: <strong>{{this.price}}</strong></li>
+            <li class="list-group-item">Stock: <strong>{{this.stock}}</strong></li>
+            <li class="list-group-item">Categoria: <strong>{{this.category}}</strong></li>
+        </ul>
+    </div>
+    {{/each}}
+</div>
+
+<link rel="stylesheet" href="/static/css/home.css"/>

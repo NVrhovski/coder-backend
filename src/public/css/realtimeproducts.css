@@ -1,0 +1,24 @@
+.add-button-container
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: flex-end;
+    padding: 30px;
+}
+
+.add-button-container button
+{
+    width: auto;
+    height: 40px;
+}
+
+.cards-container
+{
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+    padding: 30px;
+}
