@@ -1,63 +1,52 @@
 import { Router } from "express"
-import { ProductManager } from "../../managers/productManager.js";
+import { ProductManager } from "../../dao/dbmanagers/productManager.js";
 
 const productsRouter = Router();
 
-const productManager = new ProductManager('src/data/products.json');
+const productManager = new ProductManager();
 
-productsRouter.get('/', (req, res) => {
-    let result = productManager.getProducts();
-    if(!result.status)
-    {
-        if(req.query.limit && parseInt(req.query.limit) < result.length && parseInt(req.query.limit) >= 0)
-        {
-            result.length = parseInt(req.query.limit)
-            return res.status(200).json(result)
-        }else
-        {
-            return res.status(200).json(result)
-        }
-    }else
-    {
-        return res.status(400).json(result)
+productsRouter.get('/', async (req, res) => {
+    try {
+        const message = await productManager.getProducts(req.query.limit);
+        return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
     }
 })
 
-productsRouter.get('/:id', (req, res) => {
-    let item = productManager.getProductById(parseInt(req.params.id));
-    if(item)
-    {
-        return res.status(200).json(item)
-    }else
-    {
-        return res.status(400).json({status: 'Error', message: 'Producto no encontrado'})
+productsRouter.get('/:id', async (req, res) => {
+    try {
+        const message = await productManager.getProductById(req.params.id);
+        return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
     }
 })
 
-productsRouter.post('/', (req, res) => {
-    const message = productManager.addProduct({...req.body})
-    return res.status(200).json({status: 'Success', message: message})  
-})
-
-productsRouter.put('/:id', (req, res) => {
-    let result = productManager.updateProduct({productId: parseInt(req.params.id), ...req.body})
-    if(result.status == 'Success')
-    {
-        return res.status(200).json(result)
-    }else
-    {
-        return res.status(400).json(result)
+productsRouter.post('/', async (req, res) => {
+    try {
+        const message = await productManager.addProduct({...req.body});
+        return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
     }
 })
 
-productsRouter.delete('/:id', (req, res) => {
-    let result = productManager.deleteProduct(parseInt(req.params.id));
-    if(result.status == 'Success')
-    {
-        return res.status(200).json(result)
-    }else
-    {
-        return res.status(400).json(result)
+productsRouter.put('/:id', async (req, res) => {
+    try {
+        const message = await productManager.updateProduct({productId: req.params.id, ...req.body});
+        return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
+    }
+})
+
+productsRouter.delete('/:id', async (req, res) => {
+    try {
+        const message = await productManager.deleteProduct(req.params.id);
+        return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
     }
 })
 

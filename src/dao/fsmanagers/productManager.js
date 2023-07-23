@@ -88,7 +88,7 @@ export class ProductManager {
         }
     }
 
-    updateProduct({productId, title = '', description = '', price = 0, thumbnail = '/assets/images/default-image.png', code = '', stock = 0})
+    updateProduct({productId, title = '', description = '', price = 0, thumbnail = [], code = '', stock = 0, status = true, category = ''})
     {
         if(fs.existsSync(this.path))
         {
@@ -103,7 +103,9 @@ export class ProductManager {
                     price,
                     thumbnail,
                     code,
-                    stock
+                    stock,
+                    status,
+                    category
                 }
                 fs.writeFileSync(this.path, JSON.stringify(data));
                 return {status: 'Success', message: 'Producto actualizado con exito!'}

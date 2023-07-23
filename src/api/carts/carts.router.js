@@ -1,34 +1,35 @@
 import { Router } from "express";
-import { CartManager } from "../../managers/cartManager.js";
+import { CartManager } from "../../dao/dbmanagers/cartManager.js";
 
 const cartsRouter = Router();
 
-const cartManager = new CartManager('src/data/carts.json');
+const cartManager = new CartManager();
 
-cartsRouter.post('/', (req, res) => {
-    cartManager.addCart();
-    return res.status(200).json({status: 'Success', message: 'Carrito creado exitosamente'})
-})
-
-cartsRouter.get('/:cid', (req, res) => {
-    const result = cartManager.getCartProducts(parseInt(req.params.cid));
-    if(!result.status)
-    {
-        return res.status(200).json(result)
-    }else
-    {
-        return res.status(400).json(result)
+cartsRouter.post('/', async (req, res) => {
+    try {
+        const message = await cartManager.addCart();
+        return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
     }
 })
 
-cartsRouter.post('/:cid/product/:pid', (req, res) => {
-    const result = cartManager.addProductToCart(parseInt(req.params.cid), parseInt(req.params.pid), req.body.quantity)
-    if(result.status == 'Success')
-    {
-        return res.status(200).json(result)
-    }else
-    {
-        return res.status(400).json(result)
+cartsRouter.get('/:cid', async (req, res) => {
+    try {
+        const message = await cartManager.getCartProducts(req.params.cid);
+        return res.status(200).json({status: 'Success', payload: message.products})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
+    }
+})
+
+cartsRouter.post('/:cid/product/:pid', async (req, res) => {
+    try {
+        let oldCart = await cartManager.getCartProducts(req.params.cid);
+        const message = await cartManager.addProductToCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
+        return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
     }
 })
 

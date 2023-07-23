@@ -1,0 +1,10 @@
+<div class="chat-container" id="chat-container">
+    {{#each data}}
+    <p><strong>{{this.user}}</strong>: {{this.message}}</p>
+    {{/each}}
+</div>
+<input id="chat-input" type="text" placeholder="Write a message!"/>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/chat.js"></script>
+<link rel="stylesheet" href="/static/css/chat.css"/>

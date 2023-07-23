@@ -24,14 +24,14 @@ addButton.onclick = (async () => {
             }
         }
     })
-
-    // socket.emit('client_add_product', formValues)
+    
     addProduct(formValues);
 })
 
 socket.on('server_add_product', (data) => {
     let html = '';
-    let parsedData = JSON.parse(data);
+    let parsedData = JSON.parse(data).payload;
+    console.log(parsedData)
     parsedData.forEach((el) => {
         html += `
         <div class="card" style="width: 100%;">
