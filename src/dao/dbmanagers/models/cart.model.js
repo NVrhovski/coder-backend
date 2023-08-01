@@ -2,14 +2,19 @@ import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 const cartCollection = 'carts';
-
-const subSchema = new mongoose.Schema({
-    product: String,
-    quantity: Number
-  });
   
 const cartSchema = new mongoose.Schema({
-    products: [subSchema]
+    products: {
+      type: [
+        {
+          product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'products'
+          },
+          quantity: Number
+        }
+      ]
+    }
 })
 
 mongoose.set('strictQuery', false);

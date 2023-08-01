@@ -1,0 +1,23 @@
+.detail-main-container
+{
+    display: grid;
+    width: 100%;
+    height: auto;
+    grid-template-columns: 1fr 1fr;
+}
+
+.detail-main-container .carousel-control-prev-icon
+{
+    background-color: gray;
+    border-radius: 50%;
+    padding: 20px;
+    background-size: 30px;
+}
+
+.detail-main-container .carousel-control-next-icon
+{
+    background-color: gray;
+    border-radius: 50%;
+    padding: 20px;
+    background-size: 30px;
+}

@@ -1,0 +1,21 @@
+.table-container
+{
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-container table
+{
+    border: 1px solid black;
+}
+
+.table-container .paginator-container
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+}

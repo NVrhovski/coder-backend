@@ -16,8 +16,12 @@ export class ProductManager {
         })
     }
 
-    getProducts(limit){
-        return productModel.find().limit(limit)
+    getProducts(searchParams){
+        return productModel.paginate(searchParams.query ? {category: searchParams.query} : {}, {
+            limit: searchParams.limit || 10,
+            page: searchParams.page || 1,
+            sort: searchParams.sort ? {price: searchParams.sort} : ''
+        })
     };
 
     getProductById(productId){

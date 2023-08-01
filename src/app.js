@@ -12,7 +12,16 @@ const app = express();
 app.use(express.json());
 app.use('/static', express.static(`${__dirname}/public`));
 
-app.engine('handlebars', handlebars.engine());
+app.engine('handlebars', handlebars.engine({
+    helpers: {
+        forHelper: function(n, block) {
+            var accum = '';
+            for(var i = 1; i <= n; ++i)
+                accum += block.fn(i);
+            return accum;
+        }
+    }
+}));
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');
 

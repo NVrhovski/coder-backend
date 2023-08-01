@@ -1,0 +1,18 @@
+<div class="cards-container">
+    {{#each cartProducts}}
+    <div class="card" style="width: 100%;">
+        <div class="card-header">
+            <h2>{{this.product.title}}</h2>
+            <h3>Cantidad: {{this.quantity}}</h3>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{this.product.description}}</li>
+            <li class="list-group-item">Precio: <strong>{{this.product.price}}</strong></li>
+            <li class="list-group-item">Stock: <strong>{{this.product.stock}}</strong></li>
+            <li class="list-group-item">Categoria: <strong>{{this.produdct.category}}</strong></li>
+        </ul>
+    </div>
+    {{/each}}
+</div>
+
+<link rel="stylesheet" href="/static/css/cartDetail.css"/>
