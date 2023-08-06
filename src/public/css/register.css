@@ -1,0 +1,16 @@
+.form-container
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.form-container form{
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 10px;
+    width: 40%;
+}

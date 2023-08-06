@@ -7,10 +7,35 @@ import handlebars from 'express-handlebars';
 import viewsRouter from './router/views.router.js'
 import mongoose from 'mongoose';
 import messagesRouter from './api/messages/messages.router.js';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import sessionRouter from './api/session/session.router.js';
+import bodyParser from 'body-parser';
+
+const URI = 'mongodb+srv://neyenvrhovski:cascotazo@coder-backend.lipdxn8.mongodb.net/?retryWrites=true&w=majority';
 
 const app = express();
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
 app.use('/static', express.static(`${__dirname}/public`));
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: URI,
+        dbName: 'ecommerce',
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl: 100
+    }),
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}))
 
 app.engine('handlebars', handlebars.engine({
     helpers: {
@@ -29,10 +54,9 @@ app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/messages', messagesRouter);
+app.use('/api/session', sessionRouter);
 
-const URL = 'mongodb+srv://neyenvrhovski:cascotazo@coder-backend.lipdxn8.mongodb.net/?retryWrites=true&w=majority';
-
-mongoose.connect(URL, {
+mongoose.connect(URI, {
     dbName: 'ecommerce'
 }).then(() => {
     console.log('DB connected!')
