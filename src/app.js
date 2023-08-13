@@ -13,6 +13,8 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import sessionRouter from './api/session/session.router.js';
 import bodyParser from 'body-parser';
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 
 const URI = 'mongodb+srv://neyenvrhovski:cascotazo@coder-backend.lipdxn8.mongodb.net/?retryWrites=true&w=majority';
 
@@ -49,6 +51,10 @@ app.engine('handlebars', handlebars.engine({
 }));
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);

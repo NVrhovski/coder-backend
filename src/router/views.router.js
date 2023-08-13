@@ -109,7 +109,7 @@ viewsRouter.get('/register', (req, res) => {
 viewsRouter.get('/profile', (req, res) => {
     if(req.session.user)
     {
-        const data = req.session.user
+        const data = {user: req.session.user}
         res.render('profile', {data})
     }else
     {

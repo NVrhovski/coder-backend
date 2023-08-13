@@ -1,42 +1,33 @@
 import { Router } from "express"
-import { SessionManager } from "../../dao/dbmanagers/sessionManager.js";
+import passport from "passport";
 
 const sessionRouter = Router();
 
-const sessionManager = new SessionManager();
-
-async function registerMiddleware(req, res, next){
-    const check = await sessionManager.exist(req.body.email);
-    if(check)
-    {
-        return res.status(401).json({status: 'Error', message: 'Email already registered'})
-    }else
-    {
-        next();
-    }
-}
-
-sessionRouter.post('/register', registerMiddleware, async (req, res) => {
-    await sessionManager.register(req.body);
-
+sessionRouter.post('/register', passport.authenticate('register', {
+    failureRedirect: '/register'
+}), async (req, res) => {
     return res.redirect('/login')
 });
 
-sessionRouter.post('/login', async (req, res) => {
-    const user = await sessionManager.login(req.body.email, req.body.password);
-    if(user)
-    {
-        req.session.user = user;
-        res.redirect('/products');
-    }else
-    {
-        res.redirect('/login')
-    }
+sessionRouter.post('/login', passport.authenticate('login', '/login'), async (req, res) => {
+
+    req.session.user = req.user;
+
+    return res.redirect('/products');
 })
 
 sessionRouter.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/login');
+})
+
+sessionRouter.get('/login-github', passport.authenticate('github', {scope: ['user:email']}), async (req, res) => {
+
+})
+
+sessionRouter.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/'}), async (req, res) => {
+    req.session.user = req.user;
+    return res.redirect('/profile')
 })
 
 export default sessionRouter
