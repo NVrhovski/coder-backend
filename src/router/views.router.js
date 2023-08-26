@@ -1,13 +1,16 @@
 import { Router } from "express";
+import axios from "axios";
 
 const viewsRouter = Router();
 
 viewsRouter.get('/', async (req, res) => {
     let data = []
     try {
-        let response = await fetch('http://localhost:8080/api/products');
-        let fullData = await response.json();
-        data = fullData.payload;
+        let response = await axios({
+            url: 'http://localhost:8080/api/products',
+            method: 'GET'
+        })
+        data = response.data.payload;
     } catch (error) {
         console.log(error);
     }
@@ -17,9 +20,11 @@ viewsRouter.get('/', async (req, res) => {
 viewsRouter.get('/realtimeproducts', async (req, res) => {
     let data = []
     try {
-        let response = await fetch('http://localhost:8080/api/products');
-        let fullData = await response.json();
-        data = fullData.payload;
+        let response = await axios({
+            url: 'http://localhost:8080/api/products',
+            method: 'GET'
+        })
+        data = response.data.payload;
     } catch (error) {
         console.log(error);
     }
@@ -29,9 +34,11 @@ viewsRouter.get('/realtimeproducts', async (req, res) => {
 viewsRouter.get('/chat', async (req, res) => {
     let data = []
     try {
-        let response = await fetch('http://localhost:8080/api/messages');
-        let fullData = await response.json();
-        data = fullData.payload;
+        let response = await axios({
+            url: 'http://localhost:8080/api/messages',
+            method: 'GET'
+        })
+        data = response.data.payload;
     } catch (error) {
         console.log(error)
     }
@@ -43,8 +50,11 @@ viewsRouter.get('/products', async (req, res) => {
     {
         let data = []
         try {
-            let response = await fetch(`http://localhost:8080/api/products?limit=${req.query.limit || '10'}&page=${req.query.page || '1'}&sort=${req.query.sort || ''}&query=${req.query.query || ''}`);
-            data = await response.json();
+            let response = await axios({
+                url: `http://localhost:8080/api/products?limit=${req.query.limit || '10'}&page=${req.query.page || '1'}&sort=${req.query.sort || ''}&query=${req.query.query || ''}`,
+                method: 'GET'
+            });
+            data = response.data
             data.user = req.session.user
         } catch (error) {
             console.log(error);
@@ -61,9 +71,11 @@ viewsRouter.get('/products/:pid', async (req, res) => {
     {
         let product = []
         try {
-            let response = await fetch(`http://localhost:8080/api/products/${req.params.pid}`);
-            let json = await response.json();
-            product = json.payload
+            let response = await axios({
+                url: `http://localhost:8080/api/products/${req.params.pid}`,
+                method: 'GET'
+            })
+            product = response.data.payload
         } catch (error) {
             console.log(error);
         }
@@ -79,9 +91,11 @@ viewsRouter.get('/carts/:cid', async (req, res) => {
     {
         let cartProducts = []
         try {
-            let response = await fetch(`http://localhost:8080/api/carts/${req.params.cid}`);
-            let json = await response.json();
-            cartProducts = json.payload
+            let response = await axios({
+                url: `http://localhost:8080/api/carts/${req.params.cid}`,
+                method: 'GET'
+            })
+            cartProducts = response.data.payload
         } catch (error) {
             console.log(error);
         }

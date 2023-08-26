@@ -30,8 +30,7 @@ addButton.onclick = (async () => {
 
 socket.on('server_add_product', (data) => {
     let html = '';
-    let parsedData = JSON.parse(data).payload;
-    console.log(parsedData)
+    let parsedData = JSON.parse(data);
     parsedData.forEach((el) => {
         html += `
         <div class="card" style="width: 100%;">

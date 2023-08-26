@@ -10,7 +10,7 @@ window.onload = (async () => {
         const messages = JSON.parse(data);
         console.log(messages)
         let html = '';
-        messages.payload.forEach((el) => {
+        messages.forEach((el) => {
             html += `
             <p><strong>${el.user}</strong>: ${el.message}</p>
             `

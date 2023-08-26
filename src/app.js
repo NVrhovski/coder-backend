@@ -15,6 +15,7 @@ import sessionRouter from './api/session/session.router.js';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
+import axios from 'axios';
 
 const URI = 'mongodb+srv://neyenvrhovski:cascotazo@coder-backend.lipdxn8.mongodb.net/?retryWrites=true&w=majority';
 
@@ -73,11 +74,12 @@ mongoose.connect(URI, {
         console.log('Nuevo cliente conectado');
 
         socket.on('client_add_product', async () => {
-            let data = []
             try {
-                let response = await fetch('http://localhost:8080/api/products');
-                data = await response.json();
-                wsServer.emit('server_add_product', JSON.stringify(data));
+                let response = await axios({
+                    url: 'http://localhost:8080/api/products',
+                    method: 'GET'
+                });
+                wsServer.emit('server_add_product', JSON.stringify(response.data));
             } catch (error) {
                 console.log(error);
             }
@@ -85,15 +87,19 @@ mongoose.connect(URI, {
 
         socket.on('client_message_sent', async (data) => {
             try {
-                await fetch('http://localhost:8080/api/messages', {
-                    body: data, 
+                await axios({
+                    url: 'http://localhost:8080/api/messages',
+                    data, 
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
                     }
                 })
-                let rawMessages = await fetch('http://localhost:8080/api/messages');
-                let parsedMessages = await rawMessages.json();
+                let response = await axios({
+                    url: 'http://localhost:8080/api/messages',
+                    method: 'GET'
+                });
+                let parsedMessages = response.data.payload
                 wsServer.emit('server_message_sent', JSON.stringify(parsedMessages));
             } catch (error) {
                 console.log(error)
