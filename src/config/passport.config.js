@@ -1,10 +1,13 @@
 import passport from "passport";
 import local from 'passport-local';
 import userModel from "../dao/dbmanagers/models/user.model.js";
-import { createHash, isValidPassword } from "../utils.js";
+import { createHash, extractCookie, generateToken, isValidPassword } from "../utils.js";
 import GitHubStrategy from 'passport-github2';
+import passportJWT from 'passport-jwt';
 
 const LocalStrategy = local.Strategy;
+const JWTstrategy = passportJWT.Strategy;
+const JWTextract = passportJWT.ExtractJwt;
 
 const initializePassport = () => {
 
@@ -19,6 +22,7 @@ const initializePassport = () => {
                 const user = await userModel.findOne({email: profile._json.email});
                 if(user)
                 {
+                    user.token = generateToken(user);
                     return done(null, user)
                 }
 
@@ -56,7 +60,8 @@ const initializePassport = () => {
                     email,
                     age,
                     password: createHash(password),
-                    role: 'User'
+                    role: 'User',
+                    cartId: '64bd66b0985160fcd6acec8e'
                 }
                 const result = await userModel.create(newUser);
                 return done(null, result)
@@ -82,6 +87,7 @@ const initializePassport = () => {
                     return done(null, false);
                 }
                 
+                user.token = generateToken(user);
                 return done(null, user)
             } catch (error) {
                 return done(`Login error: ${error}`)
@@ -89,8 +95,18 @@ const initializePassport = () => {
         }
     ));
 
-    passport.serializeUser((user, done) => {
-        done(null, user._id)
+    passport.use('current', new JWTstrategy(
+        {
+            jwtFromRequest: JWTextract.fromExtractors([extractCookie]),
+            secretOrKey: process.env.JWT_SECRET
+        },
+        async (jwt_payload, done) => {
+            return done(null, jwt_payload)
+        }
+    ))
+
+    passport.serializeUser((session_info, done) => {
+        done(null, session_info._id || session_info.user._id)
     })
 
     passport.deserializeUser(async (id, done) => {

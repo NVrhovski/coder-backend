@@ -1,5 +1,7 @@
 import { Router } from "express";
 import axios from "axios";
+import passport from "passport";
+import { decryptToken } from "../utils.js";
 
 const viewsRouter = Router();
 
@@ -45,9 +47,7 @@ viewsRouter.get('/chat', async (req, res) => {
     res.render('chat', {data})
 })
 
-viewsRouter.get('/products', async (req, res) => {
-    if(req.session.user)
-    {
+viewsRouter.get('/products', passport.authenticate('current', {failureRedirect: '/login'}), async (req, res) => {
         let data = []
         try {
             let response = await axios({
@@ -55,20 +55,14 @@ viewsRouter.get('/products', async (req, res) => {
                 method: 'GET'
             });
             data = response.data
-            data.user = req.session.user
+            data.user = req.user.user
         } catch (error) {
             console.log(error);
         }
         res.render('products', {data})
-    }else
-    {
-        res.redirect('/login')
-    }
 })
 
-viewsRouter.get('/products/:pid', async (req, res) => {
-    if(req.session.user)
-    {
+viewsRouter.get('/products/:pid', passport.authenticate('current', {failureRedirect: '/login'}), async (req, res) => {
         let product = []
         try {
             let response = await axios({
@@ -80,15 +74,9 @@ viewsRouter.get('/products/:pid', async (req, res) => {
             console.log(error);
         }
         res.render('productDetail', {product})
-    }else
-    {
-        res.redirect('/login')
-    }
 })
 
-viewsRouter.get('/carts/:cid', async (req, res) => {
-    if(req.session.user)
-    {
+viewsRouter.get('/carts/:cid', passport.authenticate('current', {failureRedirect: '/login'}), async (req, res) => {
         let cartProducts = []
         try {
             let response = await axios({
@@ -100,16 +88,20 @@ viewsRouter.get('/carts/:cid', async (req, res) => {
             console.log(error);
         }
         res.render('cartDetail', {cartProducts})
-    }else
-    {
-        res.redirect('/login')
-    }
 })
 
 viewsRouter.get('/login', (req, res) => {
-    if(req.session.user)
+    const token = req.cookies.keyCookieForJWT
+    if(token)
     {
-        res.redirect('/products')
+        const user = decryptToken(token)
+        if(user)
+        {
+            res.redirect('/products')
+        }else
+        {
+            res.render('login', {})
+        }
     }else
     {
         res.render('login', {})
@@ -120,15 +112,9 @@ viewsRouter.get('/register', (req, res) => {
     res.render('register', {})
 })
 
-viewsRouter.get('/profile', (req, res) => {
-    if(req.session.user)
-    {
-        const data = {user: req.session.user}
-        res.render('profile', {data})
-    }else
-    {
-        res.redirect('/login');
-    }
+viewsRouter.get('/profile', passport.authenticate('current', {failureRedirect: '/login'}), (req, res) => {
+    const data = {user: req.user.user}
+    res.render('profile', {data})
 })
 
 export default viewsRouter

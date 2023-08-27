@@ -10,7 +10,6 @@ productsRouter.get('/', async (req, res) => {
         const message = await productManager.getProducts(req.query);
         const data = message.docs;
         delete message.docs;
-        console.log(data);
         return res.status(200).json({status: 'Success', payload: data, ...message})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})

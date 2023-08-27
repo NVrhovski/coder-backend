@@ -16,9 +16,9 @@ import bodyParser from 'body-parser';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import axios from 'axios';
+import { config } from 'dotenv';
 
-const URI = 'mongodb+srv://neyenvrhovski:cascotazo@coder-backend.lipdxn8.mongodb.net/?retryWrites=true&w=majority';
-
+config({ path: '.env' })
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use('/static', express.static(`${__dirname}/public`));
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: URI,
+        mongoUrl: `${process.env.MONGODB_URI}`,
         dbName: 'ecommerce',
         mongoOptions: {
             useNewUrlParser: true,
@@ -63,7 +63,7 @@ app.use('/api/carts', cartsRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/api/session', sessionRouter);
 
-mongoose.connect(URI, {
+mongoose.connect(process.env.MONGODB_URI, {
     dbName: 'ecommerce'
 }).then(() => {
     console.log('DB connected!')

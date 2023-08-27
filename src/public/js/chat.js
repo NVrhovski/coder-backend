@@ -8,7 +8,6 @@ window.onload = (async () => {
 
     socket.on('server_message_sent', (data) => {
         const messages = JSON.parse(data);
-        console.log(messages)
         let html = '';
         messages.forEach((el) => {
             html += `
