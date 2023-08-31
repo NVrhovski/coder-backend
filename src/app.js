@@ -76,7 +76,7 @@ mongoose.connect(process.env.MONGODB_URI, {
         socket.on('client_add_product', async () => {
             try {
                 let response = await axios({
-                    url: 'http://localhost:8080/api/products',
+                    url: `${process.env.API_ENDPOINT}/products`,
                     method: 'GET'
                 });
                 wsServer.emit('server_add_product', JSON.stringify(response.data));
@@ -88,7 +88,7 @@ mongoose.connect(process.env.MONGODB_URI, {
         socket.on('client_message_sent', async (data) => {
             try {
                 await axios({
-                    url: 'http://localhost:8080/api/messages',
+                    url: `${process.env.API_ENDPOINT}/messages`,
                     data, 
                     method: 'POST',
                     headers: {
@@ -96,7 +96,7 @@ mongoose.connect(process.env.MONGODB_URI, {
                     }
                 })
                 let response = await axios({
-                    url: 'http://localhost:8080/api/messages',
+                    url: `${process.env.API_ENDPOINT}/messages`,
                     method: 'GET'
                 });
                 let parsedMessages = response.data.payload

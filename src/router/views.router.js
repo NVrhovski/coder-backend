@@ -9,7 +9,7 @@ viewsRouter.get('/', async (req, res) => {
     let data = []
     try {
         let response = await axios({
-            url: 'http://localhost:8080/api/products',
+            url: `${process.env.API_ENDPOINT}/products`,
             method: 'GET'
         })
         data = response.data.payload;
@@ -23,7 +23,7 @@ viewsRouter.get('/realtimeproducts', async (req, res) => {
     let data = []
     try {
         let response = await axios({
-            url: 'http://localhost:8080/api/products',
+            url: `${process.env.API_ENDPOINT}/products`,
             method: 'GET'
         })
         data = response.data.payload;
@@ -37,7 +37,7 @@ viewsRouter.get('/chat', async (req, res) => {
     let data = []
     try {
         let response = await axios({
-            url: 'http://localhost:8080/api/messages',
+            url: `${process.env.API_ENDPOINT}/messages`,
             method: 'GET'
         })
         data = response.data.payload;

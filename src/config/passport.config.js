@@ -15,7 +15,7 @@ const initializePassport = () => {
         {
             clientID: 'Iv1.b179c276b165fbda',
             clientSecret: '50c908eb9510d26ba71ab2b64ad3c345136eb5cc',
-            callbackURL: 'http://localhost:8080/api/session/githubcallback'
+            callbackURL: `${process.env.API_ENDPOINT}/session/githubcallback`
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
@@ -29,7 +29,8 @@ const initializePassport = () => {
                 const newUser = {
                     name: profile._json.name,
                     email: profile._json.email,
-                    password: ''
+                    password: '',
+                    cartId: '64bd66b0985160fcd6acec8e'
                 }
 
                 const result = await userModel.create(newUser);

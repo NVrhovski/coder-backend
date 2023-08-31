@@ -52,7 +52,7 @@ socket.on('server_add_product', (data) => {
 
 const addProduct = async (data) => {
     try {
-        const res = await fetch('http://localhost:8080/api/products', 
+        const res = await fetch(`${process.env.API_ENDPOINT}/products`, 
         {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
         )
         const json = await res.json();
