@@ -1,12 +1,12 @@
 import express from 'express';
-import productsRouter from './api/products/products.router.js';
-import cartsRouter from './api/carts/carts.router.js';
+import productsRouter from './api/routers/products.router.js';
+import cartsRouter from './api/routers/carts.router.js';
 import { Server } from 'socket.io';
 import __dirname from './utils.js';
 import handlebars from 'express-handlebars';
 import viewsRouter from './router/views.router.js'
 import mongoose from 'mongoose';
-import messagesRouter from './api/messages/messages.router.js';
+import messagesRouter from './api/routers/messages.router.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use('/static', express.static(`${__dirname}/public`));
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: `${process.env.MONGODB_URI}`,
+        mongoUrl: process.env.MONGODB_URI,
         dbName: 'ecommerce',
         mongoOptions: {
             useNewUrlParser: true,
@@ -67,7 +67,7 @@ mongoose.connect(process.env.MONGODB_URI, {
     dbName: 'ecommerce'
 }).then(() => {
     console.log('DB connected!')
-    const httpServer = app.listen(8080);
+    const httpServer = app.listen(process.env.PORT);
     const wsServer = new Server(httpServer);
 
     wsServer.on('connection', (socket) => {

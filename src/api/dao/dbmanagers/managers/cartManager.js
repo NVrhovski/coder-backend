@@ -1,4 +1,4 @@
-import cartModel from "./models/cart.model.js";
+import cartModel from "../models/cart.model.js";
 
 export class CartManager {
 
@@ -29,7 +29,7 @@ export class CartManager {
     removeProductFromCart(cartId, productId, cart)
     {
         let oldCart = cart;
-        let selectedProductIndex = oldCart.map(el => el.product).indexOf(productId);
+        let selectedProductIndex = oldCart.map(el => el.product._id.toString()).indexOf(productId);
         if(selectedProductIndex !== -1)
         {
             oldCart.splice(selectedProductIndex, 1);
@@ -45,7 +45,7 @@ export class CartManager {
     editProductInCart(cartId, productId, quantity = 0, cart)
     {
         let oldCart = cart;
-        let selectedProductIndex = oldCart.map(el => el.product).indexOf(productId);
+        let selectedProductIndex = oldCart.map(el => el.product._id.toString()).indexOf(productId);
         if(selectedProductIndex !== -1)
         {
             oldCart[selectedProductIndex].quantity = quantity

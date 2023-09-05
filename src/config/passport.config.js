@@ -1,6 +1,7 @@
 import passport from "passport";
 import local from 'passport-local';
-import userModel from "../dao/dbmanagers/models/user.model.js";
+import userModel from '../api/dao/dbmanagers/models/user.model.js';
+import cartModel from '../api/dao/dbmanagers/models/cart.model.js';
 import { createHash, extractCookie, generateToken, isValidPassword } from "../utils.js";
 import GitHubStrategy from 'passport-github2';
 import passportJWT from 'passport-jwt';
@@ -13,8 +14,8 @@ const initializePassport = () => {
 
     passport.use('github', new GitHubStrategy(
         {
-            clientID: 'Iv1.b179c276b165fbda',
-            clientSecret: '50c908eb9510d26ba71ab2b64ad3c345136eb5cc',
+            clientID: process.env.CLIENT_GITHUB_ID,
+            clientSecret: process.env.CLIENT_GITHUB_SECRET,
             callbackURL: `${process.env.API_ENDPOINT}/session/githubcallback`
         },
         async (accessToken, refreshToken, profile, done) => {
@@ -54,7 +55,7 @@ const initializePassport = () => {
                 {
                     return done(null, false)
                 }
-
+                const newCart = await cartModel.create({products: []})
                 const newUser = {
                     first_name,
                     last_name,
@@ -62,7 +63,7 @@ const initializePassport = () => {
                     age,
                     password: createHash(password),
                     role: 'User',
-                    cartId: '64bd66b0985160fcd6acec8e'
+                    cartId: newCart._id.toString()
                 }
                 const result = await userModel.create(newUser);
                 return done(null, result)
@@ -117,9 +118,3 @@ const initializePassport = () => {
 }
 
 export default initializePassport
-
-// App ID: 375324
-
-// Client ID: Iv1.b179c276b165fbda
-
-// 50c908eb9510d26ba71ab2b64ad3c345136eb5cc 
