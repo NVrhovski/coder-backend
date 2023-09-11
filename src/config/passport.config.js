@@ -27,11 +27,12 @@ const initializePassport = () => {
                     return done(null, user)
                 }
 
+                const newCart = await cartModel.create({products: []})
                 const newUser = {
                     name: profile._json.name,
                     email: profile._json.email,
                     password: '',
-                    cartId: '64bd66b0985160fcd6acec8e'
+                    cartId: newCart._id.toString()
                 }
 
                 const result = await userModel.create(newUser);
