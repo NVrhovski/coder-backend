@@ -1,6 +1,7 @@
 import cartModel from "../models/cart.model.js";
+import ticketModel from "../models/ticket.model.js";
 
-export class CartManager {
+export default class CartManager {
 
     addCart()
     {
@@ -15,15 +16,28 @@ export class CartManager {
     addProductToCart(cartId, productId, quantity = 0, cart)
     {
         let oldCart = cart;
-        let selectedProductIndex = oldCart.map(el => el.product).indexOf(productId);
+        let parsedCart = [];
+        oldCart.forEach((el) => {
+            let parsedProduct = {
+                product: el.product._id.toString(),
+                quantity: el.quantity,
+                _id: el._id
+            };
+            parsedCart.push(parsedProduct)
+        })
+        let selectedProductIndex = parsedCart.map(el => el.product).indexOf(productId);
         if(selectedProductIndex !== -1)
         {
-            oldCart[selectedProductIndex].quantity += quantity
+            parsedCart[selectedProductIndex].quantity += quantity
         }else
         {
-            oldCart.push({product: productId, quantity: quantity})
+            let newItem = {
+                product: productId, 
+                quantity
+            }
+            parsedCart.push(newItem);  
         }
-        return cartModel.findByIdAndUpdate(cartId, {products: oldCart})
+        return cartModel.findByIdAndUpdate(cartId, {products: parsedCart})
     }
 
     removeProductFromCart(cartId, productId, cart)
@@ -58,4 +72,8 @@ export class CartManager {
         return cartModel.findByIdAndUpdate(cartId, {products: []})
     }
 
+    payCart(amount, purchaser, code)
+    {
+        return ticketModel.create({amount, purchaser, code})
+    }
 }

@@ -1,10 +1,9 @@
-import CartsService from "../services/carts.service.js";
-
-const cartService = new CartsService();
+import { CartService, ProductService } from '../repositories/index.js';
+import { generateCode } from '../../utils.js';
 
 export const addCart = async (req, res) => {
     try {
-        const message = await cartService.addCart();
+        const message = await CartService.addCart();
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
@@ -13,7 +12,7 @@ export const addCart = async (req, res) => {
 
 export const getCartProducts = async (req, res) => {
     try {
-        const message = await cartService.getCartProducts(req.params.cid);
+        const message = await CartService.getCartProducts(req.params.cid);
         return res.status(200).json({status: 'Success', payload: message.products})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
@@ -22,8 +21,8 @@ export const getCartProducts = async (req, res) => {
 
 export const addProductToCart = async (req, res) => {
     try {
-        let oldCart = await cartService.getCartProducts(req.params.cid);
-        const message = await cartService.addProductToCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
+        let oldCart = await CartService.getCartProducts(req.params.cid);
+        const message = await CartService.addProductToCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
@@ -32,9 +31,8 @@ export const addProductToCart = async (req, res) => {
 
 export const removeProductFromCart = async (req, res) => {
     try {
-        let oldCart = await cartService.getCartProducts(req.params.cid);
-        console.log(oldCart)
-        const message = await cartService.removeProductFromCart(req.params.cid, req.params.pid, oldCart.products);
+        let oldCart = await CartService.getCartProducts(req.params.cid);
+        const message = await CartService.removeProductFromCart(req.params.cid, req.params.pid, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
@@ -43,7 +41,7 @@ export const removeProductFromCart = async (req, res) => {
 
 export const editCartProducts = async (req, res) => {
     try {
-        const message = await cartService.editCartProducts(req.params.cid, req.body.newProducts);
+        const message = await CartService.editCartProducts(req.params.cid, req.body.newProducts);
         return res.status(200).json({status: 'Success', payload: message.products})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
@@ -52,8 +50,8 @@ export const editCartProducts = async (req, res) => {
 
 export const editProductInCart = async (req, res) => {
     try {
-        let oldCart = await cartService.getCartProducts(req.params.cid);
-        const message = await cartService.editProductInCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
+        let oldCart = await CartService.getCartProducts(req.params.cid);
+        const message = await CartService.editProductInCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
@@ -62,8 +60,41 @@ export const editProductInCart = async (req, res) => {
 
 export const deleteProductsInCart = async (req, res) => {
     try {
-        const message = await cartService.deleteProductsInCart(req.params.cid);
+        const message = await CartService.deleteProductsInCart(req.params.cid);
         return res.status(200).json({status: 'Success', payload: message})
+    } catch (error) {
+        return res.status(400).json({status: 'Error', error})
+    }
+}
+
+export const payCart = async (req, res) => {
+    try {
+        let oldCart = await CartService.getCartProducts(req.params.cid);
+        let nonStockProducts = [];
+        let productsToSell = [];
+        let amount = 0;
+        let test = 0;
+        oldCart.products.forEach((el) => {
+            if(el.product.stock < el.quantity)
+            {
+                nonStockProducts.push(el.product._id.toString());
+            }else
+            {
+                let product = {...el.product}._doc;
+                productsToSell.push({...product, productId: el.product._id.toString(), stock: (el.product.stock - el.quantity)});     
+                amount += el.quantity * el.product.price;
+            }
+            test++
+        })
+        productsToSell.forEach((product) => {
+            ProductService.updateProduct(product);
+            let productIndex = oldCart.products.map(el => el.product._id.toString()).indexOf(product.productId)
+            oldCart.products.splice(productIndex, 1);
+        }) 
+        await CartService.editCartProducts(req.params.cid, oldCart.products);
+        const code = generateCode();
+        const message = await CartService.payCart(amount, req.user.user.email, code);
+        return res.status(200).json({status: 'Success', payload: {ticket: message, nonStockProducts}})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
     }

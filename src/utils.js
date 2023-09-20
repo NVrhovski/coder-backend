@@ -26,4 +26,15 @@ export const extractCookie = (req) => {
     return (req && req.cookies) ? req.cookies['keyCookieForJWT'] : null
 }
 
+export const generateCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+    let string = '';
+    for(let i = 0; i <= 19; i++)
+    {
+        let randomNumber = Math.floor(Math.random() * characters.length);
+        string += characters.substring(randomNumber, randomNumber + 1); 
+    }
+    return string
+}
+
 export default __dirname

@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-export class ProductManager {
+export default class ProductManager {
     
     constructor(path)
     {
@@ -43,7 +43,7 @@ export class ProductManager {
             };
             data.push(newData);
             fs.writeFileSync(this.path, JSON.stringify(data));
-            return 'Producto agregado correctamente!';
+            return {status: 'Success', payload: newData};
         }else
         {
             let newData = [{
@@ -51,22 +51,24 @@ export class ProductManager {
                 title,
                 description,
                 price,
-                thumbnail,
+                thumbnails,
                 code,
-                stock
+                stock,
+                category,
+                status
             }];
             fs.writeFileSync(this.path, JSON.stringify(newData));
-            return 'Producto agregado correctamente!';
+            return {status: 'Success', payload: newData};
         }
     }
 
     getProducts(){
         if(fs.existsSync(this.path))
         {
-            return JSON.parse(fs.readFileSync(this.path, 'utf-8'))
+            return {status: 'Success', payload: JSON.parse(fs.readFileSync(this.path, 'utf-8'))}
         }else
         {
-            return {status: 'Error', message: 'El archivo no existe o fue borrado'}
+            return {status: 'Error', error: 'El archivo no existe o fue borrado'}
         }
     };
 
@@ -77,14 +79,14 @@ export class ProductManager {
             let selectedProduct = data.find(el => el.id === productId);
             if(selectedProduct)
             {
-                return selectedProduct
+                return {status: 'Success', payload: selectedProduct}
             }else
             {
-                return undefined
+                return {status: 'Error', error: 'Producto no encontrado'}
             }
         }else
         {
-            return 'Error: El archivo no existe o fue borrado'
+            return {status: 'Error', error: 'El archivo no existe o fue borrado'}
         }
     }
 
@@ -108,14 +110,14 @@ export class ProductManager {
                     category
                 }
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return {status: 'Success', message: 'Producto actualizado con exito!'}
+                return {status: 'Success', payload: data[productIndex]}
             }else 
             {
-                return {status: 'Error', message: 'El producto a actualizar no existe'}
+                return {status: 'Error', error: 'El producto a actualizar no existe'}
             }
         }else
         {
-            return {status: 'Error', message: 'El archivo no existe o fue borrado'}
+            return {status: 'Error', error: 'El archivo no existe o fue borrado'}
         }
     }
 
@@ -125,18 +127,19 @@ export class ProductManager {
         {
             let data = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
             let productIndex = data.map(el => el.id).indexOf(productId);
+            let selectedProduct = data[productIndex];
             if(productIndex !== -1)
             {
                 data.splice(productIndex, 1);
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return {status: 'Success', message: 'Producto eliminado con exito!'}
+                return {status: 'Success', payload: selectedProduct}
             }else 
             {
-                return {status: 'Error', message: 'El producto a eliminar no existe'}
+                return {status: 'Error', error: 'El producto a eliminar no existe'}
             }
         }else
         {
-            return {status: 'Error', message: 'El archivo no existe o fue borrado'}
+            return {status: 'Error', error: 'El archivo no existe o fue borrado'}
         }
     }
 }

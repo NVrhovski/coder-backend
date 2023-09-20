@@ -17,6 +17,7 @@ import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import axios from 'axios';
 import { config } from 'dotenv';
+import { generateCode } from './utils.js';
 
 config({ path: '.env' })
 const app = express();
@@ -39,7 +40,6 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
-
 app.engine('handlebars', handlebars.engine({
     helpers: {
         forHelper: function(n, block) {
@@ -52,11 +52,9 @@ app.engine('handlebars', handlebars.engine({
 }));
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');
-
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);

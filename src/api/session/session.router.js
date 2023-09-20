@@ -1,5 +1,6 @@
 import { Router } from "express"
 import passport from "passport";
+import UserDTO from "../dao/dto/user.dto.js";
 
 const sessionRouter = Router();
 
@@ -26,7 +27,8 @@ sessionRouter.get('/githubcallback', passport.authenticate('github', {failureRed
 })
 
 sessionRouter.get('/current', passport.authenticate('current', {failureMessage: 'Error: no se encontro usuario'}), (req, res) => {
-    return res.status(200).json({status: 'Success', payload: req.user.user})
+    const normalizedUser = new UserDTO(req.user.user);
+    return res.status(200).json({status: 'Success', payload: normalizedUser})
 })
 
 export default sessionRouter

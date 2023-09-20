@@ -1,6 +1,6 @@
 import productModel from "../models/product.model.js";
 
-export class ProductManager {
+export default class ProductManager {
 
     addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = []})
     {

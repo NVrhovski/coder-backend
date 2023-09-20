@@ -1,10 +1,12 @@
 import fs from 'fs'
+import moment from 'moment';
 
-export class CartManager {
+export default class CartManager {
     
-    constructor(path)
+    constructor(path, ticketPath)
     {
         this.path = path;
+        this.ticketPath = ticketPath;
     };
 
     getNextId()
@@ -36,7 +38,7 @@ export class CartManager {
             };
             data.push(newData);
             fs.writeFileSync(this.path, JSON.stringify(data));
-            return 'Carrito agregado correctamente!';
+            return {status: 'Success', payload: newData};
         }else
         {
             let newData = [{
@@ -44,7 +46,7 @@ export class CartManager {
                 products: []
             }];
             fs.writeFileSync(this.path, JSON.stringify(newData));
-            return 'Carrito agregado correctamente!';
+            return {status: 'Success', payload: newData};
         }
     }
 
@@ -56,14 +58,14 @@ export class CartManager {
             let selectedCart = data.find(el => el.id === cartId);
             if(selectedCart)
             {
-                return selectedCart.products
+                return {status: 'Success', payload: selectedCart}
             }else
             {
-                return {status: 'Error', message: 'El carrito no fue encontrado'}
+                return {status: 'Error', error: 'El carrito no fue encontrado'}
             }
         }else
         {
-            return {status: 'Error', message: 'El archivo no existe o fue eliminado'};
+            return {status: 'Error', error: 'El archivo no existe o fue eliminado'};
         }
     }
 
@@ -86,14 +88,93 @@ export class CartManager {
                 }
                 data[selectedCartIndex] = selectedCart;
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return {status: 'Success', message: 'Producto agregado correctamente'}
+                return {status: 'Success', message: selectedCart}
             }else
             {
-                return {status: 'Error', message: 'El carrito no fue encontrado'}
+                return {status: 'Error', error: 'El carrito no fue encontrado'}
             }
         }else
         {
-            return {status: 'Error', message: 'El archivo no existe o fue eliminado'};
+            return {status: 'Error', error: 'El archivo no existe o fue eliminado'};
+        }
+    }
+
+    removeProductFromCart(cartId, productId, cart)
+    {
+        let data = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
+        let oldCart = data.find(el => el.id === cartId);
+        let selectedCartIndex = data.map(el => el.id).indexOf(cartId);
+        let selectedProductIndex = oldCart.map(el => el.product._id.toString()).indexOf(productId);
+        if(selectedProductIndex !== -1)
+        {
+            oldCart.splice(selectedProductIndex, 1);
+            data[selectedCartIndex] = {_id: cartId, products: oldCart}
+            fs.writeFileSync(this.path, JSON.stringify(data));
+        }
+        return {status: 'Success', payload: data[selectedCartIndex]}
+    }
+
+    editCartProducts(cartId, newProducts)
+    {
+        let data = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
+        let selectedCart = data.find(el => el.id === cartId);
+        let selectedCartIndex = data.map(el => el.id).indexOf(cartId);
+        selectedCart.products = newProducts;
+        data[selectedCartIndex] = selectedCart;
+        fs.writeFileSync(this.path, JSON.stringify(data));
+        return {status: 'Success', payload: data[selectedCartIndex]}
+    }
+
+    editProductInCart(cartId, productId, quantity = 0, cart)
+    {
+        let data = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
+        let selectedCart = data.find(el => el.id === cartId);
+        let selectedCartIndex = data.map(el => el.id).indexOf(cartId);
+        let selectedProductIndex = selectedCart.map(el => el.product._id.toString()).indexOf(productId);
+        if(selectedProductIndex !== -1)
+        {
+            selectedCart[selectedProductIndex].quantity = quantity;
+            data[selectedCartIndex] = selectedCart;
+            fs.writeFileSync(this.path, JSON.stringify(data));
+        }
+        return {status: 'Success', payload: selectedCart}
+    }
+
+    deleteProductsInCart(cartId)
+    {
+        let data = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
+        let selectedCart = data.find(el => el.id === cartId);
+        let selectedCartIndex = data.map(el => el.id).indexOf(cartId);
+        selectedCart.products = [];
+        data[selectedCartIndex] = selectedCart;
+        fs.writeFileSync(this.path, JSON.stringify(data));
+        return {status: 'Success', payload: selectedCart}
+    }
+
+    payCart(amount, purchaser, code)
+    {
+        if(fs.existsSync(this.ticketPath))
+        {
+            let data = JSON.parse(fs.readFileSync(this.ticketPath, 'utf-8'));
+            let newData = {
+                code,
+                amount,
+                purchaser,
+                purchase_datetime: moment().format()
+            };
+            data.push(newData);
+            fs.writeFileSync(this.ticketPath, JSON.stringify(data));
+            return {status: 'Success', payload: newData};
+        }else
+        {
+            let newData = [{
+                code,
+                amount,
+                purchaser,
+                purchase_datetime: moment().format()
+            }];
+            fs.writeFileSync(this.ticketPath, JSON.stringify(newData));
+            return {status: 'Success', payload: newData};
         }
     }
 
