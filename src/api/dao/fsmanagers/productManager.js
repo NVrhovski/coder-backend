@@ -43,7 +43,7 @@ export default class ProductManager {
             };
             data.push(newData);
             fs.writeFileSync(this.path, JSON.stringify(data));
-            return {status: 'Success', payload: newData};
+            return newData
         }else
         {
             let newData = [{
@@ -58,14 +58,14 @@ export default class ProductManager {
                 status
             }];
             fs.writeFileSync(this.path, JSON.stringify(newData));
-            return {status: 'Success', payload: newData};
+            return newData
         }
     }
 
     getProducts(){
         if(fs.existsSync(this.path))
         {
-            return {status: 'Success', payload: JSON.parse(fs.readFileSync(this.path, 'utf-8'))}
+            return JSON.parse(fs.readFileSync(this.path, 'utf-8'))
         }else
         {
             return {status: 'Error', error: 'El archivo no existe o fue borrado'}
@@ -79,7 +79,7 @@ export default class ProductManager {
             let selectedProduct = data.find(el => el.id === productId);
             if(selectedProduct)
             {
-                return {status: 'Success', payload: selectedProduct}
+                return selectedProduct
             }else
             {
                 return {status: 'Error', error: 'Producto no encontrado'}
@@ -110,7 +110,7 @@ export default class ProductManager {
                     category
                 }
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return {status: 'Success', payload: data[productIndex]}
+                return data[productIndex]
             }else 
             {
                 return {status: 'Error', error: 'El producto a actualizar no existe'}
@@ -132,7 +132,7 @@ export default class ProductManager {
             {
                 data.splice(productIndex, 1);
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return {status: 'Success', payload: selectedProduct}
+                return selectedProduct
             }else 
             {
                 return {status: 'Error', error: 'El producto a eliminar no existe'}

@@ -13,6 +13,14 @@ switch (config.persistence) {
         Cart = CartMongo,
         Message = MessageMongo
         break;
+    case 'memory':
+        const { default: ProductMemory } = await import('./dbmanagers/managers/productManager.js');
+        const { default: CartMemory } = await import('./dbmanagers/managers/cartManager.js');
+        const { default: MessageMemory } = await import('./dbmanagers/managers/messageManager.js');
+        Product = ProductMongo,
+        Cart = CartMongo,
+        Message = MessageMongo
+        break;
     default:
         const { default: ProductFile } = await import('./fsmanagers/productManager.js');
         const { default: CartFile } = await import('./fsmanagers/cartManager.js');

@@ -36,7 +36,7 @@ export default class MessageManager {
             };
             data.push(newData);
             fs.writeFileSync(this.path, JSON.stringify(data));
-            return {status: 'Success', payload: newData};
+            return newData
         }else
         {
             let newData = [{
@@ -45,14 +45,14 @@ export default class MessageManager {
                 user
             }];
             fs.writeFileSync(this.path, JSON.stringify(newData));
-            return {status: 'Success', payload: newData};
+            return newData
         }
     }
 
     getMessages(){
         if(fs.existsSync(this.path))
         {
-            return {status: 'Success', payload: JSON.parse(fs.readFileSync(this.path, 'utf-8'))}
+            return JSON.parse(fs.readFileSync(this.path, 'utf-8'))
         }else
         {
             return {status: 'Error', error: 'El archivo no existe o fue borrado'}

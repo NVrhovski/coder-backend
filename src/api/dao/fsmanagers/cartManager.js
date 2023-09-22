@@ -38,7 +38,7 @@ export default class CartManager {
             };
             data.push(newData);
             fs.writeFileSync(this.path, JSON.stringify(data));
-            return {status: 'Success', payload: newData};
+            return newData;
         }else
         {
             let newData = [{
@@ -46,7 +46,7 @@ export default class CartManager {
                 products: []
             }];
             fs.writeFileSync(this.path, JSON.stringify(newData));
-            return {status: 'Success', payload: newData};
+            return newData;
         }
     }
 
@@ -58,7 +58,7 @@ export default class CartManager {
             let selectedCart = data.find(el => el.id === cartId);
             if(selectedCart)
             {
-                return {status: 'Success', payload: selectedCart}
+                return selectedCart
             }else
             {
                 return {status: 'Error', error: 'El carrito no fue encontrado'}
@@ -88,7 +88,7 @@ export default class CartManager {
                 }
                 data[selectedCartIndex] = selectedCart;
                 fs.writeFileSync(this.path, JSON.stringify(data));
-                return {status: 'Success', message: selectedCart}
+                return selectedCart
             }else
             {
                 return {status: 'Error', error: 'El carrito no fue encontrado'}
@@ -111,7 +111,7 @@ export default class CartManager {
             data[selectedCartIndex] = {_id: cartId, products: oldCart}
             fs.writeFileSync(this.path, JSON.stringify(data));
         }
-        return {status: 'Success', payload: data[selectedCartIndex]}
+        return data[selectedCartIndex]
     }
 
     editCartProducts(cartId, newProducts)
@@ -122,7 +122,7 @@ export default class CartManager {
         selectedCart.products = newProducts;
         data[selectedCartIndex] = selectedCart;
         fs.writeFileSync(this.path, JSON.stringify(data));
-        return {status: 'Success', payload: data[selectedCartIndex]}
+        return data[selectedCartIndex]
     }
 
     editProductInCart(cartId, productId, quantity = 0, cart)
@@ -137,7 +137,7 @@ export default class CartManager {
             data[selectedCartIndex] = selectedCart;
             fs.writeFileSync(this.path, JSON.stringify(data));
         }
-        return {status: 'Success', payload: selectedCart}
+        return selectedCart
     }
 
     deleteProductsInCart(cartId)
@@ -148,7 +148,7 @@ export default class CartManager {
         selectedCart.products = [];
         data[selectedCartIndex] = selectedCart;
         fs.writeFileSync(this.path, JSON.stringify(data));
-        return {status: 'Success', payload: selectedCart}
+        return selectedCart
     }
 
     payCart(amount, purchaser, code)
@@ -164,7 +164,7 @@ export default class CartManager {
             };
             data.push(newData);
             fs.writeFileSync(this.ticketPath, JSON.stringify(data));
-            return {status: 'Success', payload: newData};
+            return newData
         }else
         {
             let newData = [{
@@ -174,7 +174,7 @@ export default class CartManager {
                 purchase_datetime: moment().format()
             }];
             fs.writeFileSync(this.ticketPath, JSON.stringify(newData));
-            return {status: 'Success', payload: newData};
+            return newData
         }
     }
 
