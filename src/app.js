@@ -17,7 +17,6 @@ import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import axios from 'axios';
 import { config } from 'dotenv';
-import { generateCode } from './utils.js';
 
 config({ path: '.env' })
 const app = express();

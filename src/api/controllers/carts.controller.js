@@ -1,5 +1,6 @@
 import { CartService, ProductService } from '../repositories/index.js';
 import { generateCode } from '../../utils.js';
+import { transport } from '../../config/config.js';
 
 export const addCart = async (req, res) => {
     try {
@@ -94,6 +95,29 @@ export const payCart = async (req, res) => {
         await CartService.editCartProducts(req.params.cid, oldCart.products);
         const code = generateCode();
         const message = await CartService.payCart(amount, req.user.user.email, code);
+        await transport.sendMail({
+            from: 'neyenvrhovski@gmail.com',
+            to: 'neyenchu@gmail.com',
+            subject: 'Tu ticket de compra',
+            html: `
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Código:</td>
+                            <td>${message.code}</td>
+                        </tr>
+                        <tr>
+                            <td>Fecha:</td>
+                            <td>${message.purchase_datetime}</td>
+                        </tr>
+                        <tr>
+                            <td>Total:</td>
+                            <td>${message.amount}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `
+        })
         return res.status(200).json({status: 'Success', payload: {ticket: message, nonStockProducts}})
     } catch (error) {
         return res.status(400).json({status: 'Error', error})
