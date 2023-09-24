@@ -20,6 +20,9 @@
                         <a class="nav-link" href="/profile">Profile</a>
                         <a class="nav-link" href="/products">Products</a>
                         {{#if data.user}}
+                        <a href="/checkout"><button class="btn btn-secondary" style="margin-right: 12px">Checkout</button></a>
+                        {{/if}}
+                        {{#if data.user}}
                         <a href="/api/session/logout"><button class="btn btn-primary">Logout</button></a>
                         {{/if}}
                     </div>

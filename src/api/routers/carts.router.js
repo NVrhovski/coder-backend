@@ -19,6 +19,6 @@ cartsRouter.put('/:cid/product/:pid', passport.authenticate('current'), userMidd
 
 cartsRouter.delete('/:cid/product/:pid', removeProductFromCart)
 
-cartsRouter.post('/:cid/purchase', passport.authenticate('current'), userMiddleware, payCart)
+cartsRouter.post('/purchase', passport.authenticate('current'), userMiddleware, payCart)
 
 export default cartsRouter

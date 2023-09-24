@@ -117,4 +117,9 @@ viewsRouter.get('/profile', passport.authenticate('current', {failureRedirect: '
     res.render('profile', {data})
 })
 
+viewsRouter.get('/checkout', passport.authenticate('current', {failureRedirect: '/login'}), (req, res) => {
+    const data = {user: req.user.user}
+    res.render('checkout', {data})
+})
+
 export default viewsRouter
