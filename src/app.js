@@ -17,6 +17,8 @@ import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import axios from 'axios';
 import { config } from 'dotenv';
+import testRouter from './test/test.router.js';
+import errorHandler from './middleware/error.middleware.js';
 
 config({ path: '.env' })
 const app = express();
@@ -59,6 +61,8 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/api/session', sessionRouter);
+app.use('/test', testRouter);
+app.use(errorHandler);
 
 mongoose.connect(process.env.MONGODB_URI, {
     dbName: 'ecommerce'

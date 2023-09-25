@@ -1,6 +1,9 @@
 import { CartService, ProductService } from '../repositories/index.js';
 import { generateCode } from '../../utils.js';
 import { transport } from '../../config/config.js';
+import CustomError from '../../errors/custom_error.js';
+import { generateUnknowCartError } from '../../errors/info.js';
+import EErrors from '../../errors/enums.js';
 
 export const addCart = async (req, res) => {
     try {
@@ -14,63 +17,126 @@ export const addCart = async (req, res) => {
 export const getCartProducts = async (req, res) => {
     try {
         const message = await CartService.getCartProducts(req.params.cid);
+        if(!message)
+        {
+            CustomError.createError({
+                name: 'Unknow cart error',
+                cause: generateUnknowCartError(req.params.cid),
+                message: 'Error while retrieving cart',
+                code: EErrors.UNKNOW_CART_ERROR
+            })
+        }
         return res.status(200).json({status: 'Success', payload: message.products})
     } catch (error) {
-        return res.status(400).json({status: 'Error', error})
+        return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
 
 export const addProductToCart = async (req, res) => {
     try {
         let oldCart = await CartService.getCartProducts(req.params.cid);
+        if(!oldCart)
+        {
+            CustomError.createError({
+                name: 'Unknow cart error',
+                cause: generateUnknowCartError(req.params.cid),
+                message: 'Error while retrieving cart',
+                code: EErrors.UNKNOW_CART_ERROR
+            })
+        }
         const message = await CartService.addProductToCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
-        return res.status(400).json({status: 'Error', error})
+        return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
 
 export const removeProductFromCart = async (req, res) => {
     try {
         let oldCart = await CartService.getCartProducts(req.params.cid);
+        if(!oldCart)
+        {
+            CustomError.createError({
+                name: 'Unknow cart error',
+                cause: generateUnknowCartError(req.params.cid),
+                message: 'Error while retrieving cart',
+                code: EErrors.UNKNOW_CART_ERROR
+            })
+        }
         const message = await CartService.removeProductFromCart(req.params.cid, req.params.pid, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
-        return res.status(400).json({status: 'Error', error})
+        return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
 
 export const editCartProducts = async (req, res) => {
     try {
         const message = await CartService.editCartProducts(req.params.cid, req.body.newProducts);
+        if(!message)
+        {
+            CustomError.createError({
+                name: 'Unknow cart error',
+                cause: generateUnknowCartError(req.params.cid),
+                message: 'Error while retrieving cart',
+                code: EErrors.UNKNOW_CART_ERROR
+            })
+        }
         return res.status(200).json({status: 'Success', payload: message.products})
     } catch (error) {
-        return res.status(400).json({status: 'Error', error})
+        return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
 
 export const editProductInCart = async (req, res) => {
     try {
         let oldCart = await CartService.getCartProducts(req.params.cid);
+        if(!oldCart)
+        {
+            CustomError.createError({
+                name: 'Unknow cart error',
+                cause: generateUnknowCartError(req.params.cid),
+                message: 'Error while retrieving cart',
+                code: EErrors.UNKNOW_CART_ERROR
+            })
+        }
         const message = await CartService.editProductInCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
-        return res.status(400).json({status: 'Error', error})
+        return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
 
 export const deleteProductsInCart = async (req, res) => {
     try {
         const message = await CartService.deleteProductsInCart(req.params.cid);
+        if(!message)
+        {
+            CustomError.createError({
+                name: 'Unknow cart error',
+                cause: generateUnknowCartError(req.params.cid),
+                message: 'Error while retrieving cart',
+                code: EErrors.UNKNOW_CART_ERROR
+            })
+        }
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
-        return res.status(400).json({status: 'Error', error})
+        return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
 
 export const payCart = async (req, res) => {
     try {
         let oldCart = await CartService.getCartProducts(req.user.user.cartId);
+        if(!oldCart)
+        {
+            CustomError.createError({
+                name: 'Unknow cart error',
+                cause: generateUnknowCartError(req.params.cid),
+                message: 'Error while retrieving cart',
+                code: EErrors.UNKNOW_CART_ERROR
+            })
+        }
         let nonStockProducts = [];
         let productsToSell = [];
         let amount = 0;
@@ -120,6 +186,6 @@ export const payCart = async (req, res) => {
         })
         return res.status(200).json({status: 'Success', payload: {ticket: message, nonStockProducts}})
     } catch (error) {
-        return res.status(400).json({status: 'Error', error})
+        return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
