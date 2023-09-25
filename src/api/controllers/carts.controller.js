@@ -92,10 +92,10 @@ export const payCart = async (req, res) => {
             let productIndex = oldCart.products.map(el => el.product._id.toString()).indexOf(product.productId)
             oldCart.products.splice(productIndex, 1);
         }) 
-        await CartService.editCartProducts(req.user.user.cartId, oldCart.products);
+        CartService.editCartProducts(req.user.user.cartId, oldCart.products);
         const code = generateCode();
         const message = await CartService.payCart(amount, req.user.user.email, code);
-        await transport.sendMail({
+        transport.sendMail({
             from: 'neyenvrhovski@gmail.com',
             to: req.user.user.email,
             subject: 'Tu ticket de compra',
