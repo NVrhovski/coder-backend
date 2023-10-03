@@ -24,6 +24,7 @@ export const getProductById = async (req, res) => {
         }
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant get product info - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -33,6 +34,7 @@ export const addProduct = async (req, res) => {
         const message = await ProductService.addProduct({...req.body});
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant add product - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error})
     }
 }
@@ -51,6 +53,7 @@ export const updateProduct = async (req, res) => {
         }
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant update product - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -69,6 +72,7 @@ export const deleteProduct = async (req, res) => {
         }
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant delete product - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }

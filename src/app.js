@@ -19,6 +19,7 @@ import axios from 'axios';
 import { config } from 'dotenv';
 import testRouter from './test/test.router.js';
 import errorHandler from './middleware/error.middleware.js';
+import { addLogger } from './middleware/logger.middleware.js';
 
 config({ path: '.env' })
 const app = express();
@@ -56,6 +57,7 @@ app.set('view engine', 'handlebars');
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(addLogger);
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);

@@ -14,7 +14,7 @@ viewsRouter.get('/', async (req, res) => {
         })
         data = response.data.payload;
     } catch (error) {
-        console.log(error);
+        req.logger.error(`Cant get products info - ${new Date().toLocaleDateString()}`)
     }
     res.render('home', {data})
 })
@@ -28,7 +28,7 @@ viewsRouter.get('/realtimeproducts', async (req, res) => {
         })
         data = response.data.payload;
     } catch (error) {
-        console.log(error);
+        req.logger.error(`Cant get products info - ${new Date().toLocaleDateString()}`)
     }
     res.render('realTimeProducts', {data})
 })
@@ -42,7 +42,7 @@ viewsRouter.get('/chat', async (req, res) => {
         })
         data = response.data.payload;
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Cant get messages - ${new Date().toLocaleDateString()}`)
     }
     res.render('chat', {data})
 })
@@ -57,7 +57,7 @@ viewsRouter.get('/products', passport.authenticate('current', {failureRedirect: 
             data = response.data
             data.user = req.user.user
         } catch (error) {
-            console.log(error);
+            req.logger.error(`Cant get products info - ${new Date().toLocaleDateString()}`)
         }
         res.render('products', {data})
 })
@@ -71,7 +71,7 @@ viewsRouter.get('/products/:pid', passport.authenticate('current', {failureRedir
             })
             product = response.data.payload
         } catch (error) {
-            console.log(error);
+            req.logger.error(`Cant get product info - ${new Date().toLocaleDateString()}`)
         }
         res.render('productDetail', {product})
 })
@@ -85,7 +85,7 @@ viewsRouter.get('/carts/:cid', passport.authenticate('current', {failureRedirect
             })
             cartProducts = response.data.payload
         } catch (error) {
-            console.log(error);
+            req.logger.error(`Cant get cart info - ${new Date().toLocaleDateString()}`)
         }
         res.render('cartDetail', {cartProducts})
 })

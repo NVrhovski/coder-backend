@@ -10,6 +10,7 @@ export const addCart = async (req, res) => {
         const message = await CartService.addCart();
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant add cart - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error})
     }
 }
@@ -28,6 +29,7 @@ export const getCartProducts = async (req, res) => {
         }
         return res.status(200).json({status: 'Success', payload: message.products})
     } catch (error) {
+        req.logger.error(`Cant get products info - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -47,6 +49,7 @@ export const addProductToCart = async (req, res) => {
         const message = await CartService.addProductToCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant add product to cart - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -66,6 +69,7 @@ export const removeProductFromCart = async (req, res) => {
         const message = await CartService.removeProductFromCart(req.params.cid, req.params.pid, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant remove product from cart - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -84,6 +88,7 @@ export const editCartProducts = async (req, res) => {
         }
         return res.status(200).json({status: 'Success', payload: message.products})
     } catch (error) {
+        req.logger.error(`Cant edit cart products - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -103,6 +108,7 @@ export const editProductInCart = async (req, res) => {
         const message = await CartService.editProductInCart(req.params.cid, req.params.pid, req.body.quantity, oldCart.products);
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant edit product in cart - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -121,6 +127,7 @@ export const deleteProductsInCart = async (req, res) => {
         }
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
+        req.logger.error(`Cant delete product from cart - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
@@ -186,6 +193,7 @@ export const payCart = async (req, res) => {
         })
         return res.status(200).json({status: 'Success', payload: {ticket: message, nonStockProducts}})
     } catch (error) {
+        req.logger.error(`Cant pay cart - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
     }
 }
