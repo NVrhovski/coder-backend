@@ -6,8 +6,15 @@
             <p class="card-text">{{product.description}}</p>
             <h6 class="card-subtitle mb-2 text-body-secondary">${{product.price}}</h6>
             <h6 class="card-subtitle mb-2 text-body-secondary">{{product.code}}</h6>
-            <h6 class="card-subtitle mb-2 text-body-secondary">{{product.stock}}</h6>
-            <button class="btn btn-primary">Add to cart</button>
+            <h6 class="card-subtitle mb-2 text-body-secondary" id="product-stock">{{product.stock}}</h6>
+            <div class="card-buttons">
+                <p id="product-quantity">0</p>
+                <div class="card-buttons-inner">
+                    <button class="btn btn-outline-primary" disabled="true" id="remove-button">Remove</button>
+                    <button class="btn btn-primary" disabled="true" id="add-to-cart-button" onclick="addToCart('{{product._id}}', '{{product.cartId}}')">Add to cart</button>
+                    <button class="btn btn-outline-primary" disabled="true" id="add-button">Add</button>
+                </div>
+            </div>
         </div>
     </div>
     <div id="carouselExample" class="carousel slide">

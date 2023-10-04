@@ -6,6 +6,25 @@
     grid-template-columns: 1fr 1fr;
 }
 
+.detail-main-container .card-buttons
+{
+    display: flex;
+    width: fit-content;
+    flex-direction: column;
+    align-items: center;
+}
+
+.detail-main-container .card-buttons .card-buttons-inner
+{
+    display: flex;
+    gap: 10px;
+}
+
+.detail-main-container .card-buttons .card-buttons-inner button
+{
+    width: 120px;
+}
+
 .detail-main-container .carousel-control-prev-icon
 {
     background-color: gray;

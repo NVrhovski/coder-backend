@@ -70,6 +70,7 @@ viewsRouter.get('/products/:pid', passport.authenticate('current', {failureRedir
                 method: 'GET'
             })
             product = response.data.payload
+            product.cartId = req.user.user.cartId
         } catch (error) {
             req.logger.error(`Cant get product info - ${new Date().toLocaleDateString()}`)
         }
