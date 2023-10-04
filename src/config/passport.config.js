@@ -16,7 +16,7 @@ const initializePassport = () => {
         {
             clientID: process.env.CLIENT_GITHUB_ID,
             clientSecret: process.env.CLIENT_GITHUB_SECRET,
-            callbackURL: `${process.env.API_ENDPOINT}/session/githubcallback`
+            callbackURL: `${process.env.HOST_URLPOINT}/api/session/githubcallback`
         },
         async (accessToken, refreshToken, profile, done) => {
             try {

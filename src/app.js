@@ -58,13 +58,13 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(addLogger);
+app.use(errorHandler);
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/api/session', sessionRouter);
 app.use('/test', testRouter);
-app.use(errorHandler);
 
 mongoose.connect(process.env.MONGODB_URI, {
     dbName: 'ecommerce'
@@ -79,7 +79,7 @@ mongoose.connect(process.env.MONGODB_URI, {
         socket.on('client_add_product', async () => {
             try {
                 let response = await axios({
-                    url: `${process.env.API_ENDPOINT}/products`,
+                    url: `${process.env.HOST_URLPOINT}/api/products`,
                     method: 'GET'
                 });
                 wsServer.emit('server_add_product', JSON.stringify(response.data));
@@ -91,7 +91,7 @@ mongoose.connect(process.env.MONGODB_URI, {
         socket.on('client_message_sent', async (data) => {
             try {
                 await axios({
-                    url: `${process.env.API_ENDPOINT}/messages`,
+                    url: `${process.env.HOST_URLPOINT}/api/messages`,
                     data, 
                     method: 'POST',
                     headers: {
@@ -99,7 +99,7 @@ mongoose.connect(process.env.MONGODB_URI, {
                     }
                 })
                 let response = await axios({
-                    url: `${process.env.API_ENDPOINT}/messages`,
+                    url: `${process.env.HOST_URLPOINT}.api/messages`,
                     method: 'GET'
                 });
                 let parsedMessages = response.data.payload
