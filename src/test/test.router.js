@@ -1,7 +1,8 @@
-import { Router } from "express";
-import { faker } from '@faker-js/faker';
+import { Router, raw } from "express";
+import { da, faker } from '@faker-js/faker';
 import fs from 'fs';
 import __dirname from "../utils.js";
+import { parse } from "path";
 
 const testRouter = Router();
 
@@ -27,7 +28,18 @@ testRouter.get('/mockingproducts', (req, res) => {
 testRouter.get('/loggerTest', (req, res) => {
     if(fs.existsSync(`${__dirname}/errors.log`))
     {
-        let data = JSON.parse(fs.readFileSync(`${__dirname}/errors.log`, 'utf-8'))
+        const rawData = fs.readFileSync(`${__dirname}/errors.log`, "utf-8");
+        const lines = rawData.split("\n"); 
+        const data = [];
+        lines.forEach((el) => {
+          try {
+            const parseado  = JSON.parse(el);
+            data.push(parseado);
+          } catch (error) {
+            console.error(`Error analizando JSON: ${error}`);
+          }
+        });
+        
         return res.status(200).json({status: 'Success', payload: data})
     }else 
     {
