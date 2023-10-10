@@ -31,7 +31,7 @@ export const getProductById = async (req, res) => {
 
 export const addProduct = async (req, res) => {
     try {
-        const message = await ProductService.addProduct({...req.body});
+        const message = await ProductService.addProduct({...req.body, owner: req.user.user.email});
         return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
         req.logger.error(`Cant add product - ${new Date().toLocaleDateString()}`)
@@ -41,17 +41,40 @@ export const addProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     try {
-        const message = await ProductService.updateProduct({productId: req.params.id, ...req.body});
-        if(!message)
+        if(req.user.user.role == 'Premium')
         {
-            CustomError.createError({
-                name: 'Unknow product error',
-                cause: generateUnknowProductError(req.params.id),
-                message: 'Error while retrieving product',
-                code: EErrors.UNKNOW_PRODUCT_ERROR
-            })
+            const product = await ProductService.getProductById(req.params.id);
+            if(product.owner == req.user.user.email)
+            {
+                const message = await ProductService.updateProduct({productId: req.params.id, ...req.body});
+                if(!message)
+                {
+                    CustomError.createError({
+                        name: 'Unknow product error',
+                        cause: generateUnknowProductError(req.params.id),
+                        message: 'Error while retrieving product',
+                        code: EErrors.UNKNOW_PRODUCT_ERROR
+                    })
+                }
+                return res.status(200).json({status: 'Success', payload: message})
+            }else
+            {
+                return res.status(400).json({status: 'Error', error: 'Can only update your products'})
+            }
+        }else
+        {
+            const message = await ProductService.updateProduct({productId: req.params.id, ...req.body});
+            if(!message)
+            {
+                CustomError.createError({
+                    name: 'Unknow product error',
+                    cause: generateUnknowProductError(req.params.id),
+                    message: 'Error while retrieving product',
+                    code: EErrors.UNKNOW_PRODUCT_ERROR
+                })
+            }
+            return res.status(200).json({status: 'Success', payload: message})
         }
-        return res.status(200).json({status: 'Success', payload: message})
     } catch (error) {
         req.logger.error(`Cant update product - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})
@@ -60,17 +83,41 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     try {
-        const message = await ProductService.deleteProduct(req.params.id);
-        if(!message)
+        if(req.user.user.role == 'Premium')
         {
-            CustomError.createError({
-                name: 'Unknow product error',
-                cause: generateUnknowProductError(req.params.id),
-                message: 'Error while retrieving product',
-                code: EErrors.UNKNOW_PRODUCT_ERROR
-            })
+            const product = await ProductService.getProductById(req.params.id);
+            if(product.owner == req.user.user.email)
+            {
+                const message = await ProductService.deleteProduct(req.params.id);
+                if(!message)
+                {
+                    CustomError.createError({
+                        name: 'Unknow product error',
+                        cause: generateUnknowProductError(req.params.id),
+                        message: 'Error while retrieving product',
+                        code: EErrors.UNKNOW_PRODUCT_ERROR
+                    })
+                }
+                return res.status(200).json({status: 'Success', payload: message})
+            }else
+            {
+                return res.status(400).json({status: 'Error', error: 'Can only delete your products'})
+            }
         }
-        return res.status(200).json({status: 'Success', payload: message})
+        else
+        {
+            const message = await ProductService.deleteProduct(req.params.id);
+            if(!message)
+            {
+                CustomError.createError({
+                    name: 'Unknow product error',
+                    cause: generateUnknowProductError(req.params.id),
+                    message: 'Error while retrieving product',
+                    code: EErrors.UNKNOW_PRODUCT_ERROR
+                })
+            }
+            return res.status(200).json({status: 'Success', payload: message})
+    }
     } catch (error) {
         req.logger.error(`Cant delete product - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})

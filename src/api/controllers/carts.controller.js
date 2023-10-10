@@ -36,6 +36,14 @@ export const getCartProducts = async (req, res) => {
 
 export const addProductToCart = async (req, res) => {
     try {
+        if(req.user.user.role == 'Premium')
+        {
+            const product = ProductService.getProductById(req.params.pid);
+            if(product.owner == req.user.user.email)
+            {
+                return res.status(400).json({status: 'Error', error: 'Cant add your own product'})
+            }
+        }
         let oldCart = await CartService.getCartProducts(req.params.cid);
         if(!oldCart)
         {

@@ -1,0 +1,17 @@
+.recover-main-container
+{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 0;
+}
+
+.recover-main-container form
+{
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}

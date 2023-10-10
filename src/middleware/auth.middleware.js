@@ -1,5 +1,5 @@
 export const adminMiddleware = async (req, res, next) => {
-    if(req.user.user.role == 'Administrator')
+    if(req.user.user.role == 'Administrator' || req.user.user.role == 'Premium')
     {
         next()
     }else
@@ -9,7 +9,7 @@ export const adminMiddleware = async (req, res, next) => {
 }
 
 export const userMiddleware = async (req, res, next) => {
-    if(req.user.user.role == 'User')
+    if(req.user.user.role == 'User' || req.user.user.role == 'Premium')
     {
         next()
     }else

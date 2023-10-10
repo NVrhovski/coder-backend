@@ -2,6 +2,7 @@ import { Router } from "express";
 import axios from "axios";
 import passport from "passport";
 import { decryptToken } from "../utils.js";
+import moment from "moment";
 
 const viewsRouter = Router();
 
@@ -121,6 +122,25 @@ viewsRouter.get('/profile', passport.authenticate('current', {failureRedirect: '
 viewsRouter.get('/checkout', passport.authenticate('current', {failureRedirect: '/login'}), (req, res) => {
     const data = {user: req.user.user}
     res.render('checkout', {data})
+})
+
+viewsRouter.get('/recover', (req, res) => {
+    res.render('recover', {})
+})
+
+viewsRouter.get('/redirect-sended', (req, res) => {
+    res.render('redirectSended', {})
+})
+
+viewsRouter.get('/password-recovery', (req, res) => {
+    const data = decryptToken(req.query.t)
+    if(moment(data.user.timestamp).isAfter(moment().subtract(1, 'hours')))
+    {
+        res.render('passwordRecovery', {data})
+    }else
+    {
+        res.redirect('/recover');
+    }
 })
 
 export default viewsRouter

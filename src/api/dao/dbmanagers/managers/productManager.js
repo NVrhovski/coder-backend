@@ -2,7 +2,7 @@ import productModel from "../models/product.model.js";
 
 export default class ProductManager {
 
-    addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = []})
+    addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = [], owner = 'admin'})
     {
         return productModel.create({
             title,
@@ -12,7 +12,8 @@ export default class ProductManager {
             status,
             stock,
             category,
-            thumbnails
+            thumbnails,
+            owner
         })
     }
 

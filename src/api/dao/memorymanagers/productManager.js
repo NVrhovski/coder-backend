@@ -16,7 +16,7 @@ export default class ProductManager {
         }
     }
 
-    addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = []})
+    addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = [], owner = 'admin'})
     {
         let newData = {
             id: this.getNextId(),
@@ -27,7 +27,8 @@ export default class ProductManager {
             code,
             stock,
             category,
-            status
+            status,
+            owner
         };
         this.db.push(newData);
         return this.db

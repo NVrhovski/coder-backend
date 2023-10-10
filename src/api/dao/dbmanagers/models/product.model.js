@@ -16,7 +16,8 @@ const productSchema = new mongoose.Schema({
     category: String,
     thumbnails: [{
         type: String
-    }]
+    }],
+    owner: String
 })
 
 productSchema.plugin(mongoosePaginate);

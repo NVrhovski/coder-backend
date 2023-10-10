@@ -25,7 +25,7 @@ export default class ProductManager {
         }
     }
 
-    addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = []})
+    addProduct({title = '', description = '', code = '', price = 0, status = true, stock = 0, category = '', thumbnails = [], owner = 'admin'})
     {
         if(fs.existsSync(this.path))
         {
@@ -39,7 +39,8 @@ export default class ProductManager {
                 code,
                 stock,
                 category,
-                status
+                status,
+                owner
             };
             data.push(newData);
             fs.writeFileSync(this.path, JSON.stringify(data));
