@@ -11,7 +11,7 @@ export default class CartManager {
 
     getNextId()
     {
-        if(this.db.length == 0)
+        if(this.db.length === 0)
         {
             return 1
         }else

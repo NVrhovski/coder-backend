@@ -41,10 +41,10 @@ export const addProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     try {
-        if(req.user.user.role == 'Premium')
+        if(req.user.user.role === 'Premium')
         {
             const product = await ProductService.getProductById(req.params.id);
-            if(product.owner == req.user.user.email)
+            if(product.owner === req.user.user.email)
             {
                 const message = await ProductService.updateProduct({productId: req.params.id, ...req.body});
                 if(!message)
@@ -83,10 +83,10 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     try {
-        if(req.user.user.role == 'Premium')
+        if(req.user.user.role === 'Premium')
         {
             const product = await ProductService.getProductById(req.params.id);
-            if(product.owner == req.user.user.email)
+            if(product.owner === req.user.user.email)
             {
                 const message = await ProductService.deleteProduct(req.params.id);
                 if(!message)

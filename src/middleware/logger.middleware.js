@@ -13,7 +13,7 @@ const logger = winston.createLogger({
     levels: customLevels,
     transports: [
         new winston.transports.Console({
-            level: process.env.ENVIROMENT == 'development' ? 'debug' : 'info'
+            level: process.env.ENVIROMENT === 'development' ? 'debug' : 'info'
         }),
         new winston.transports.File({
             filename: './src/errors.log',

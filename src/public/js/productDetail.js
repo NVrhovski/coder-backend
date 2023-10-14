@@ -16,7 +16,7 @@ window.addEventListener('load', function () {
 })
 
 const handleProductQuantity = (option) => {
-    if(option == 'add')
+    if(option === 'add')
     {
         productQuantity ++;
         jQuery('#product-quantity').html(productQuantity);

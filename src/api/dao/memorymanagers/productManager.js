@@ -7,7 +7,7 @@ export default class ProductManager {
 
     getNextId()
     {
-        if(this.db.length == 0)
+        if(this.db.length === 0)
         {
             return 1
         }else

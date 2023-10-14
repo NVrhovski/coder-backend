@@ -83,7 +83,7 @@ sessionRouter.post('/change-password', async (req, res) => {
 sessionRouter.post('/premium/:uid', async (req, res) => {
     try {
         const user = await userModel.findById(req.params.uid);
-        if(user.role == 'Premium')
+        if(user.role === 'Premium')
         {
             const message = await userModel.findByIdAndUpdate(req.params.uid, {role: 'User'})
             return res.status(200).json({status: 'Success', payload: message})

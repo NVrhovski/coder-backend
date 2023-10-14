@@ -12,7 +12,7 @@ export default class ProductManager {
         if(fs.existsSync(this.path))
         {
             let data = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
-            if(data.length == 0)
+            if(data.length === 0)
             {
                 return 1
             }else

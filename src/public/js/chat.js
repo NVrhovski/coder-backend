@@ -26,7 +26,7 @@ window.onload = (async () => {
 })
 
 chatInput.onkeyup = ((event) => {
-    if(event.key == 'Enter' && chatInput.value)
+    if(event.key === 'Enter' && chatInput.value)
     {
         socket.emit('client_message_sent', JSON.stringify({user: username, message: chatInput.value}));
         chatInput.value = '';
