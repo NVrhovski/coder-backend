@@ -1,0 +1,471 @@
+paths:
+  /api/carts:
+    post:
+      summary: Crea un carrito
+      tags: 
+        - Carritos
+      responses:
+        "200":
+          description: El carrito se generó satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la solicitud
+                  payload:
+                    type: object
+                    description: Carrito creado
+                    $ref: '#components/schemas/Cart'
+  /api/carts/{cid}:
+    get:
+      summary: Devuelve los productos del carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito solicitado
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Los productos del carrito fueron devueltos satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la solicitud
+                  payload:
+                    type: array
+                    description: Array de productos
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          type: object
+                          description: El producto
+                          $ref: '../products/products.yaml#/components/schemas/Product'
+                        quantity:
+                          type: number
+                          description: Cantidad solicitada
+        "400":
+          description: El ID no corresponse a ningún carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la solicitud
+                  error:
+                    type: string
+                    description: Descripción del error
+    put:
+      summary: Edita los productos de un carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito solicitado
+          schema:
+            $type: String
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/editProducts'
+      responses:
+        "200":
+          description: Los productos del carrito fueron editados satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la solicitud
+                  payload:
+                    type: array
+                    description: Array de productos
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          type: object
+                          description: El producto
+                          $ref: '../products/products.yaml#/components/schemas/Product'
+                        quantity:
+                          type: number
+                          description: Cantidad solicitada
+        "400":
+          description: El ID no corresponse a ningún carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la solicitud
+                  error:
+                    type: string
+                    description: Descripción del error
+    delete:
+      summary: Elimina los productos de un carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito solicitado
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Los productos del carrito fueron eliminados satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la solicitud
+                  payload:
+                    type: object
+                    description: El carrito
+                    $ref: '#components/schemas/Cart'       
+        "400":
+          description: El ID no corresponse a ningún carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la solicitud
+                  error:
+                    type: string
+                    description: Descripción del error
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agrega un producto al carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito solicitado
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            $type: String
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  description: Cantidad de el producto a agregar
+      responses:
+        "200":
+          description: El producto fue agregado satisfactoriamente
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    payload:
+                      type: object
+                      description: El carrito
+                      $ref: '#components/schemas/Cart'
+        "400":
+          description: El ID del carrito o del producto no corresponden a un documento existente
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    error:
+                      type: string
+                      description: Descripción del error
+        "401":
+          description: Error de autenticacion
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    error:
+                      type: string
+                      description: Descripción del error
+    put:
+      summary: Edita la cantidad del producto en el carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito solicitado
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            $type: String
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  description: Cantidad de el producto a editar
+      responses:
+        "200":
+          description: La cantidad del producto fue editada correctamente
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    payload:
+                      type: object
+                      description: El carrito
+                      $ref: '#components/schemas/Cart'
+        "400":
+          description: El ID del carrito o del producto no corresponden a un documento existente
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    error:
+                      type: string
+                      description: Descripción del error
+        "401":
+          description: Error de autenticacion
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    error:
+                      type: string
+                      description: Descripción del error
+    delete:
+      summary: Elimina un producto del carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito solicitado
+          schema:
+            $type: String
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: El producto fue eliminado satisfactoriamente
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    payload:
+                      type: object
+                      description: El carrito
+                      $ref: '#components/schemas/Cart'
+        "400":
+          description: El ID del carrito o del producto no corresponden a un documento existente
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    error:
+                      type: string
+                      description: Descripción del error
+        "401":
+          description: Error de autenticacion
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    error:
+                      type: string
+                      description: Descripción del error
+  /api/carts/purchase:
+    post:
+      summary: Pagar un carrito
+      tags:
+        - Carritos
+      responses:
+        "200":
+          description: El carrito fue pagado satisfactoriamente
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    ticket:
+                      type: object
+                      description: El carrito
+                      properties:
+                        code:
+                          type: string
+                          description: Codigo del ticket
+                        amount:
+                          type: number
+                          description: Total de la compra
+                        purchaser: 
+                          type: string
+                          description: Email del comprador
+                        purchase_datetime:
+                          type: string
+                          description: Timestamp de la compra
+        "401":
+          description: Error de autenticacion
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Estado de la solicitud
+                    error:
+                      type: string
+                      description: Descripción del error
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID autogenerado por mongo
+        products: 
+          type: array
+          description: Productos en el carrito
+          items:
+            type: object
+            properties:
+              product:
+                type: object
+                description: El producto
+                $ref: '../products/products.yaml#/components/schemas/Product'
+              quantity:
+                type: number
+                description: Cantidad solicitada
+      example:
+        _id: ObjectId("64bd66b0985160fcd6acec8e")
+        products:
+          - product:  
+              _id: ObjectId("64bd5318d08361c2a559823f")
+              title: Nombre roducto
+              description: Descripcion del producto
+              code: FMV-959
+              price: 1000
+              status: true
+              stock: 50
+              category: Home
+              thumbnails:
+                - https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgD4KiXALCNRTxmBfVFoZ_3ltI88OHREHFiA&usqp=CAU
+                - https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgD4KiXALCNRTxmBfVFoZ_3ltI88OHREHFiA&usqp=CAU
+              owner: Admin
+            quantity: 20
+          - product:  
+              _id: ObjectId("64bd5318d08361c2a559823f")
+              title: Nombre roducto 2
+              description: Descripcion del producto 2
+              code: FMV-959
+              price: 1000
+              status: true
+              stock: 50
+              category: Home
+              thumbnails:
+                - https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgD4KiXALCNRTxmBfVFoZ_3ltI88OHREHFiA&usqp=CAU
+                - https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgD4KiXALCNRTxmBfVFoZ_3ltI88OHREHFiA&usqp=CAU
+              owner: Admin
+            quantity: 10
+  requestBodies:
+    editProducts:
+      type: object
+      properties:
+        newProducts:
+          type: array
+          description: Nuevos productos
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: ID del producto
+              quantity: 
+                type: number
+                description: Cantidad del producto

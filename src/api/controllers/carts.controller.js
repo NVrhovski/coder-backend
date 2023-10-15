@@ -155,9 +155,9 @@ export const payCart = async (req, res) => {
         let nonStockProducts = [];
         let productsToSell = [];
         let amount = 0;
-        let test = 0;
+        console.log(oldCart)
         oldCart.products.forEach((el) => {
-            if(el.product.stock < el.quantity)
+            if(el.product?.stock < el.quantity)
             {
                 nonStockProducts.push(el.product._id.toString());
             }else
@@ -166,7 +166,6 @@ export const payCart = async (req, res) => {
                 productsToSell.push({...product, productId: el.product._id.toString(), stock: (el.product.stock - el.quantity)});     
                 amount += el.quantity * el.product.price;
             }
-            test++
         })
         productsToSell.forEach((product) => {
             ProductService.updateProduct(product);

@@ -20,6 +20,20 @@ import { config } from 'dotenv';
 import testRouter from './test/test.router.js';
 import errorHandler from './middleware/error.middleware.js';
 import { addLogger } from './middleware/logger.middleware.js';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentación sobre la API del E-Commerce',
+            description: 'Toda la información sobre la API, sus endpoints, esquemas y parametros'
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+}
+const specs = swaggerJSDoc(swaggerOptions);
 
 config({ path: '.env' })
 const app = express();
@@ -59,12 +73,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(addLogger);
 app.use(errorHandler);
-app.use('/', viewsRouter);
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/api/session', sessionRouter);
 app.use('/test', testRouter);
+app.use('/', viewsRouter);
 
 mongoose.connect(process.env.MONGODB_URI, {
     dbName: 'ecommerce'
