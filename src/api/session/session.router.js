@@ -1,7 +1,7 @@
 import { Router } from "express"
 import passport from "passport";
 import UserDTO from "../dao/dto/user.dto.js";
-import { createHash, decryptToken, generateToken, isValidPassword } from "../../utils.js";
+import { createHash, generateToken, isValidPassword } from "../../utils.js";
 import { transport } from "../../config/config.js";
 import moment from "moment/moment.js";
 import userModel from "../dao/dbmanagers/models/user.model.js";
