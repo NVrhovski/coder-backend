@@ -2,7 +2,7 @@ import { Router } from "express"
 import passport from "passport";
 import UserDTO from "../dao/dto/user.dto.js";
 import { createHash, generateToken, isValidPassword } from "../../utils.js";
-import { transport } from "../../config/config.js";
+import config, { transport } from "../../config/config.js";
 import moment from "moment/moment.js";
 import userModel from "../dao/dbmanagers/models/user.model.js";
 
@@ -45,7 +45,7 @@ sessionRouter.post('/recover', (req, res) => {
             subject: 'Password recovery',
             html: `
                 <table>
-                    <a target="_blank" href="${process.env.HOST_URL}/password-recovery?t=${token}">
+                    <a target="_blank" href="${config.hostURL}/password-recovery?t=${token}">
                         <button>Recover password</button>
                     </a>
                 </table>
@@ -76,24 +76,6 @@ sessionRouter.post('/change-password', async (req, res) => {
         }
     } catch (error) {
         req.logger.error(`Cant change password - ${new Date().toLocaleDateString()}`)
-        return res.status(400).json({status: 'Error', error})
-    }
-})
-
-sessionRouter.post('/premium/:uid', async (req, res) => {
-    try {
-        const user = await userModel.findById(req.params.uid);
-        if(user.role === 'Premium')
-        {
-            const message = await userModel.findByIdAndUpdate(req.params.uid, {role: 'User'})
-            return res.status(200).json({status: 'Success', payload: message})
-        }else
-        {
-            const message = await userModel.findByIdAndUpdate(req.params.uid, {role: 'Premium'})
-            return res.status(200).json({status: 'Success', payload: message})
-        }
-    } catch (error) {
-        req.logger.error(`Cant change role - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error})
     }
 })

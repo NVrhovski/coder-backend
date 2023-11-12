@@ -2,6 +2,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import config from './config/config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,11 +16,11 @@ export const isValidPassword = (user, password) => {
 }
 
 export const generateToken = (user) => {
-    return jwt.sign({user}, process.env.JWT_SECRET, {expiresIn: '24h'})
+    return jwt.sign({user}, config.jwtSecret, {expiresIn: '24h'})
 }
 
 export const decryptToken = (token) => {
-    return jwt.verify(token, process.env.JWT_SECRET)
+    return jwt.verify(token, config.jwtSecret)
 }
 
 export const extractCookie = (req) => {

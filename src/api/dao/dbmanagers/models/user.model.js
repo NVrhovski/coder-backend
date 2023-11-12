@@ -18,7 +18,16 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: 'User'
-    }
+    },
+    documents: {
+        type: [
+            {
+              name: String,
+              reference: String
+            }
+        ]
+    },
+    last_connection: Date
 })
 
 mongoose.set('strictQuery', false);

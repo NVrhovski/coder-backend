@@ -1,10 +1,9 @@
-import { config } from 'dotenv';
 import chai from 'chai';
 import supertest from 'supertest';
+import config from '../../config/config.js';
 
-config({ path: '.env' })
 const expect = chai.expect;
-const requester = supertest(`${process.env.HOST_URL}/api`);
+const requester = supertest(`${config.hostURL}/api`);
 
 describe('Products testing', () => {
 

@@ -5,6 +5,7 @@ import cartModel from '../api/dao/dbmanagers/models/cart.model.js';
 import { createHash, extractCookie, generateToken, isValidPassword } from "../utils.js";
 import GitHubStrategy from 'passport-github2';
 import passportJWT from 'passport-jwt';
+import config from "./config.js";
 
 const LocalStrategy = local.Strategy;
 const JWTstrategy = passportJWT.Strategy;
@@ -14,9 +15,9 @@ const initializePassport = () => {
 
     passport.use('github', new GitHubStrategy(
         {
-            clientID: process.env.CLIENT_GITHUB_ID,
-            clientSecret: process.env.CLIENT_GITHUB_SECRET,
-            callbackURL: `${process.env.HOST_URLPOINT}/api/session/githubcallback`
+            clientID: config.clientGithubID,
+            clientSecret: config.clientGithubSecret,
+            callbackURL: `${config.hostURL}/api/session/githubcallback`
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
@@ -101,7 +102,7 @@ const initializePassport = () => {
     passport.use('current', new JWTstrategy(
         {
             jwtFromRequest: JWTextract.fromExtractors([extractCookie]),
-            secretOrKey: process.env.JWT_SECRET
+            secretOrKey: config.jwtSecret
         },
         async (jwt_payload, done) => {
             return done(null, jwt_payload)

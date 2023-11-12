@@ -17,3 +17,7 @@ export const userMiddleware = async (req, res, next) => {
         return res.status(401).json({status: 'Error', error: 'Unauthorized'})
     }
 }
+
+export const premiumMiddleware = async (req, res, next) => {
+    
+}

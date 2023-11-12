@@ -16,14 +16,14 @@ import bodyParser from 'body-parser';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import axios from 'axios';
-import { config } from 'dotenv';
 import testRouter from './test/test.router.js';
 import errorHandler from './middleware/error.middleware.js';
 import { addLogger } from './middleware/logger.middleware.js';
 import swaggerUiExpress from 'swagger-ui-express';
 import specs from './docs/swagger.js';
+import config from './config/config.js';
+import usersRouter from './api/users/users.router.js';
 
-config({ path: '.env' })
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use('/static', express.static(`${__dirname}/public`));
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI,
+        mongoUrl: config.mongoDBUri,
         dbName: 'ecommerce',
         mongoOptions: {
             useNewUrlParser: true,
@@ -66,14 +66,15 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/api/session', sessionRouter);
+app.use('/api/users', usersRouter)
 app.use('/test', testRouter);
 app.use('/', viewsRouter);
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(config.mongoDBUri, {
     dbName: 'ecommerce'
 }).then(() => {
     console.log('DB connected!')
-    const httpServer = app.listen(process.env.PORT);
+    const httpServer = app.listen(config.port);
     const wsServer = new Server(httpServer);
 
     wsServer.on('connection', (socket) => {
@@ -82,7 +83,7 @@ mongoose.connect(process.env.MONGODB_URI, {
         socket.on('client_add_product', async () => {
             try {
                 let response = await axios({
-                    url: `${process.env.HOST_URLPOINT}/api/products`,
+                    url: `${config.hostURL}/api/products`,
                     method: 'GET'
                 });
                 wsServer.emit('server_add_product', JSON.stringify(response.data));
@@ -94,7 +95,7 @@ mongoose.connect(process.env.MONGODB_URI, {
         socket.on('client_message_sent', async (data) => {
             try {
                 await axios({
-                    url: `${process.env.HOST_URLPOINT}/api/messages`,
+                    url: `${config.hostURL}/api/messages`,
                     data, 
                     method: 'POST',
                     headers: {
@@ -102,7 +103,7 @@ mongoose.connect(process.env.MONGODB_URI, {
                     }
                 })
                 let response = await axios({
-                    url: `${process.env.HOST_URLPOINT}.api/messages`,
+                    url: `${config.hostURL}.api/messages`,
                     method: 'GET'
                 });
                 let parsedMessages = response.data.payload

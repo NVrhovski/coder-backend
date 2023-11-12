@@ -1,4 +1,5 @@
 import winston from "winston";
+import config from "../config/config.js";
 
 const customLevels = {
     fatal: 0,
@@ -13,7 +14,7 @@ const logger = winston.createLogger({
     levels: customLevels,
     transports: [
         new winston.transports.Console({
-            level: process.env.ENVIROMENT === 'development' ? 'debug' : 'info'
+            level: config.enviroment === 'development' ? 'debug' : 'info'
         }),
         new winston.transports.File({
             filename: './src/errors.log',

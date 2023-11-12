@@ -3,6 +3,7 @@ import axios from "axios";
 import passport from "passport";
 import { decryptToken } from "../utils.js";
 import moment from "moment";
+import config from "../config/config.js";
 
 const viewsRouter = Router();
 
@@ -10,7 +11,7 @@ viewsRouter.get('/', async (req, res) => {
     let data = []
     try {
         let response = await axios({
-            url: `${process.env.HOST_URLPOINT}/api/products`,
+            url: `${config.hostURL}/api/products`,
             method: 'GET'
         })
         data = response.data.payload;
@@ -24,7 +25,7 @@ viewsRouter.get('/realtimeproducts', async (req, res) => {
     let data = []
     try {
         let response = await axios({
-            url: `${process.env.HOST_URLPOINT}/api/products`,
+            url: `${config.hostURL}/api/products`,
             method: 'GET'
         })
         data = response.data.payload;
@@ -38,7 +39,7 @@ viewsRouter.get('/chat', async (req, res) => {
     let data = []
     try {
         let response = await axios({
-            url: `${process.env.HOST_URLPOINT}/api/messages`,
+            url: `${config.hostURL}/api/messages`,
             method: 'GET'
         })
         data = response.data.payload;
