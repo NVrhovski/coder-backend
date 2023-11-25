@@ -15,10 +15,12 @@ sessionRouter.post('/register', passport.authenticate('register', {
 });
 
 sessionRouter.post('/login', passport.authenticate('login', '/login'), async (req, res) => {
+    await userModel.findByIdAndUpdate(req.user._id.toString(), {last_connection: new Date()})
     return res.cookie('keyCookieForJWT', req.user.token).redirect('/products')
 })
 
-sessionRouter.get('/logout', (req, res) => {
+sessionRouter.get('/logout', passport.authenticate('current', {failureMessage: 'Error: no esta logeado'}), async (req, res) => {
+    await userModel.findByIdAndUpdate(req.user.user._id, {last_connection: new Date()})
     return res.clearCookie('keyCookieForJWT').redirect('/login')
 })
 
