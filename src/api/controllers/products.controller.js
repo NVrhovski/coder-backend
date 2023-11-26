@@ -2,6 +2,8 @@ import { ProductService } from "../repositories/index.js";
 import CustomError from '../../errors/custom_error.js';
 import { generateUnknowProductError } from '../../errors/info.js';
 import EErrors from '../../errors/enums.js';
+import userModel from "../dao/dbmanagers/models/user.model.js";
+import { transport } from "../../config/config.js";
 
 export const getAll = async (req, res) => {
     const message = await ProductService.getAll(req.query);
@@ -55,6 +57,14 @@ export const updateProduct = async (req, res) => {
                         message: 'Error while retrieving product',
                         code: EErrors.UNKNOW_PRODUCT_ERROR
                     })
+                    transport.sendMail({
+                        from: 'neyenvrhovski@gmail.com',
+                        to: req.user.user.email,
+                        subject: 'Tu ticket de compra',
+                        html: `
+                            <p>Un producto de su catalogo ha sido eliminado</p>
+                        `
+                    })
                 }
                 return res.status(200).json({status: 'Success', payload: message})
             }else
@@ -63,6 +73,19 @@ export const updateProduct = async (req, res) => {
             }
         }else
         {
+            const product = await ProductService.getProductById(req.params.id);
+            const ownerEmail = product.owner
+            const owner = await userModel.findOne({email: ownerEmail})
+            if(owner.role === 'Premium'){
+                transport.sendMail({
+                    from: 'neyenvrhovski@gmail.com',
+                    to: req.user.user.email,
+                    subject: 'Tu ticket de compra',
+                    html: `
+                        <p>Un producto de su catalogo ha sido eliminado</p>
+                    `
+                })
+            }
             const message = await ProductService.updateProduct({productId: req.params.id, ...req.body});
             if(!message)
             {
@@ -98,6 +121,7 @@ export const deleteProduct = async (req, res) => {
                         code: EErrors.UNKNOW_PRODUCT_ERROR
                     })
                 }
+                
                 return res.status(200).json({status: 'Success', payload: message})
             }else
             {
@@ -117,7 +141,7 @@ export const deleteProduct = async (req, res) => {
                 })
             }
             return res.status(200).json({status: 'Success', payload: message})
-    }
+        }
     } catch (error) {
         req.logger.error(`Cant delete product - ${new Date().toLocaleDateString()}`)
         return res.status(400).json({status: 'Error', error: error.name, cause: error.cause})

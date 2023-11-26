@@ -2,6 +2,8 @@ import { Router } from "express";
 import userModel from "../dao/dbmanagers/models/user.model.js";
 import multer from "multer";
 import __dirname from "../../utils.js";
+import UserDTO from "../dao/dto/user.dto.js";
+import moment from "moment";
 
 const usersRouter = Router();
 
@@ -106,6 +108,24 @@ usersRouter.post('/:uid/documents',
         }
         const message = await userModel.findByIdAndUpdate(req.params.uid, {documents: newDocuments})
         res.status(200).json({status: 'Success', payload: message})
+});
+
+usersRouter.get('/', async (req, res) => {
+    const rawUsers = await userModel.find();
+    const parsedUsers = [];
+    rawUsers.forEach((user) => {
+        parsedUsers.push(new UserDTO(user))
+    })
+    return res.status(200).json({status: 'Success', payload: parsedUsers})
+})
+
+usersRouter.delete('/', async (req, res) => {
+    const users = await userModel.deleteMany({last_connection: {$lte: new Date(moment().subtract(2, 'days'))}})
+    return res.status(200).json({status: 'Success', payload: users})
+})
+usersRouter.delete('/:uid', async (req, res) => {
+    const response = await userModel.findByIdAndDelete(req.params.uid)
+    return res.status(200).json({status: 'Success', payload: response})
 })
 
 export default usersRouter

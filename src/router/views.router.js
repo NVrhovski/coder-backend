@@ -4,6 +4,9 @@ import passport from "passport";
 import { decryptToken } from "../utils.js";
 import moment from "moment";
 import config from "../config/config.js";
+import { adminMiddleware } from "../middleware/auth.middleware.js";
+import userModel from "../api/dao/dbmanagers/models/user.model.js";
+import UserDTO from "../api/dao/dto/user.dto.js";
 
 const viewsRouter = Router();
 
@@ -142,6 +145,16 @@ viewsRouter.get('/password-recovery', (req, res) => {
     {
         res.redirect('/recover');
     }
+})
+
+viewsRouter.get('/usersList', passport.authenticate('current', {failureRedirect: '/login'}), adminMiddleware,
+    async (req, res) => {
+    const rawUsers = await userModel.find();
+    const users = [];
+    rawUsers.forEach((user) => {
+        users.push(new UserDTO(user))
+    })
+    res.render('usersList', {users})
 })
 
 export default viewsRouter

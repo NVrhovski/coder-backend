@@ -1,0 +1,28 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nombre</th>
+      <th scope="col">Apellido</th>
+      <th scope="col">Edad</th>
+      <th scope="col">Email</th>
+      <th scope="col">Rol</th>
+      <th scope="col">Modificar rol</th>
+      <th scope="col">Eliminar</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <td>{{this.first_name}}</td>
+      <td>{{this.last_name}}</td>
+      <td>{{this.age}}</td>
+      <td>{{this.email}}</td>
+      <td>{{this.role}}</td>
+      <td><button type="button" class="btn btn-warning" onclick="handleRoleChange('{{this.id}}')">Cambiar rol</button></td>
+      <td><button type="button" class="btn btn-danger" onclick="handleUserDelete('{{this.id}}')">Eliminar</button></td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<script src="/static/js/userlist.js"></script>
